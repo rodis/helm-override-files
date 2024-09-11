@@ -1,0 +1,68 @@
+---
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: kafka-auth
+  namespace: vector
+spec:
+  method: kubernetes
+  mount: kubernetes
+  kubernetes:
+    role: kafka_auth
+    serviceAccount: vector
+    audiences:
+      - vault
+---
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultStaticSecret
+metadata:
+  name: kafka-auth
+  namespace: vector
+spec:
+  type: kv-v2
+
+  # mount path
+  mount: secret
+
+  # path of the secret
+  path: kafka/auth
+
+  # dest k8s secret
+  destination:
+    name: kafka-auth
+    create: true
+
+  # static secret refresh interval
+  refreshAfter: 30s
+
+  # Name of the CRD to authenticate to Vault
+  vaultAuthRef: kafka-auth
+---
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: clickhouse-auth
+  namespace: vector
+spec:
+  method: kubernetes
+  mount: kubernetes
+  kubernetes:
+    role: clickhouse_auth
+    serviceAccount: vector
+    audiences:
+      - vault
+---
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultStaticSecret
+metadata:
+  name: clickhouse-auth
+  namespace: vector
+spec:
+  type: kv-v2
+  mount: secret
+  path: clickhouse/auth
+  destination:
+    name: clickhouse-auth
+    create: true
+  refreshAfter: 30s
+  vaultAuthRef: clickhouse-auth
