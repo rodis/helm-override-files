@@ -1,0 +1,68 @@
+ingress:
+    enabled: true
+    ingressClassName: nginx
+    hostname: airflow.rods.me
+    annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+    tls: true
+auth:
+    existingSecret: airflow-all-secrets
+    username: admin
+executor: CeleryExecutor
+web:
+    livenessProbe:
+        enabled: false
+scheduler:
+    livenessProbe:
+        enabled: false
+worker:
+    replicaCount: 5
+    livenessProbe:
+        enabled: false
+    extraVolumeMounts:
+      - name: apache-airflow-requirements
+        mountPath: /requirements.txt
+        subPath: requirements.txt
+    extraVolumes:
+      - name: apache-airflow-requirements
+        configMap:
+          name: apache-airflow-requirements
+git:
+    dags:
+        enabled: true
+        repositories:
+          - repository: "https://github.com/rodis/airflow-dag.git"
+            name: airflow
+            branch: main
+postgresql:
+  auth:
+    existingSecret: airflow-all-secrets
+    secretKeys:
+      userPasswordKey: postgres-user-password
+redis:
+  auth:
+    existingSecret: airflow-all-secrets
+extraVolumes:
+  - name: requirements-volume
+    configMap:
+      name: apache-airflow-requirements
+  - name: venv
+    emptyDir: {}
+extraVolumeMounts:
+  - name: requirements-volume
+    mountPath: /bitnami/python
+  - name: venv
+    mountPath: /opt/bitnami/airflow/venv/lib
+initContainers:
+  - name: copy-python-env
+    image: bitnami/airflow
+    command:
+      - /bin/bash
+    args:
+      - -ec
+      - |
+        #!/bin/bash
+        cp -r /opt/bitnami/airflow/venv/lib/* /venv
+    volumeMounts:
+      - name: venv
+        mountPath: /venv
