@@ -1,0 +1,29 @@
+---
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: clickhouse-auth
+  namespace: clickhouse
+spec:
+  method: kubernetes
+  mount: kubernetes
+  kubernetes:
+    role: clickhouse_auth
+    serviceAccount: clickhouse
+    audiences:
+      - vault
+---
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultStaticSecret
+metadata:
+  name: clickhouse-auth
+  namespace: clickhouse
+spec:
+  type: kv-v2
+  mount: secret
+  path: clickhouse/auth
+  destination:
+    name: clickhouse-auth
+    create: true
+  refreshAfter: 30s
+  vaultAuthRef: clickhouse-auth
