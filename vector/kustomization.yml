@@ -6,9 +6,11 @@ configMapGenerator:
 - files:
   - configs/sources/http_server_data_in.yml
   name: vector-sources
+  namespace: vector
 - files:
   - configs/sinks/http_to_kafka.yml
   name: vector-sinks
+  namespace: vector
 patchesStrategicMerge:
 - patch-vector-sources-configmap.yml
 - patch-vector-sinks-configmap.yml

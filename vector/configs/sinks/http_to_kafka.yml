@@ -1,6 +1,6 @@
 type: kafka
 inputs:
-  - datain
+  - http_server_data_in
 bootstrap_servers: kafka-controller-0.kafka-controller-headless.kafka.svc.cluster.local:9092,kafka-controller-1.kafka-controller-headless.kafka.svc.cluster.local:9092,kafka-controller-2.kafka-controller-headless.kafka.svc.cluster.local:9092
 topic: transactions
 encoding:

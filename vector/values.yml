@@ -17,18 +17,6 @@ service:
       port: 80
       protocol: TCP
 logLevel: "debug"
-extraVolumes:
-  - name: vector-sources
-    configMap:
-      name: vector-sources
-  - name: vector-sinks
-    configMap:
-      name: vector-sinks
-extraVolumeMounts:
-  - name: vector-sources
-    mountPath: /etc/vector/sources
-  - name: vector-sinks
-    mountPath: /etc/vector/sinks
 env:
   - name: KAFKA_AUTH_USER
     valueFrom:
@@ -50,3 +38,18 @@ env:
       secretKeyRef:
         name: clickhouse-auth
         key: password
+extraVolumes:
+  - name: vector-sources
+    configMap:
+      name: vector-sources
+  - name: vector-sinks
+    configMap:
+      name: vector-sinks
+extraVolumeMounts:
+  - name: vector-sources
+    mountPath: /vector/sources
+  - name: vector-sinks
+    mountPath: /vector/sinks
+args:
+  - --config-dir
+  - "/vector/"
