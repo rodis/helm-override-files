@@ -10,3 +10,5 @@ configMapGenerator:
 patchesStrategicMerge:
 - patch-vector-sources-configmap.yml
 - patch-vector-sinks-configmap.yml
+generatorOptions:
+ disableNameSuffixHash: true
