@@ -1,6 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  name: vector-sources
   annotations:
     meta.helm.sh/release-name: vector
     meta.helm.sh/release-namespace: vector
