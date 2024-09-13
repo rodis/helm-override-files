@@ -1,4 +1,7 @@
 ---
+customConfig:
+  api:
+    enabled: false
 ingress:
   enabled: true
   className: nginx
