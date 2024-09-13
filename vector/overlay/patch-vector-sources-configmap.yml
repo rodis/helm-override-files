@@ -3,5 +3,6 @@ kind: ConfigMap
 metadata:
   name: vector-sources
   annotations:
+    namespace: vector
     meta.helm.sh/release-name: vector
     meta.helm.sh/release-namespace: vector

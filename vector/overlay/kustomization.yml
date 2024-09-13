@@ -7,6 +7,6 @@ configMapGenerator:
 - files:
   - configs/sinks/http_to_kafka.yml
   name: vector-sinks
-  namespace: vector
 patchesStrategicMerge:
-- patch-add-helm-annotations.yml
+- patch-vector-sources-configmap.yml
+- patch-vector-sinks-configmap.yml
