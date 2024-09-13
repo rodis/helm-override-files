@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vector-sinks
+  namespace: vector
+  labels:
+    app.kubernetes.io/component: Aggregator
+    app.kubernetes.io/instance: vector
+    app.kubernetes.io/managed-by: Helm
+    

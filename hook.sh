@@ -1,4 +1,4 @@
 #!/bin/bash
 
-cat <&0 > all.yaml
-kubectl kustomize vector/overlay && rm all.yaml
+cat <&0 > vector/all.yml
+kubectl kustomize vector && rm vector/all.yaml
