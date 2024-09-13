@@ -1,0 +1,68 @@
+data_dir: /vector-data-dir
+sources:
+  datain:
+    address: 0.0.0.0:80
+    type: http_server
+    decoding:
+      codec: json
+  transactions:
+    type: kafka
+    bootstrap_servers: kafka-controller-0.kafka-controller-headless.kafka.svc.cluster.local:9092,kafka-controller-1.kafka-controller-headless.kafka.svc.cluster.local:9092,kafka-controller-2.kafka-controller-headless.kafka.svc.cluster.local:9092
+    group_id: transactions-to-clickhouse
+    decoding:
+      codec: json
+    topics:
+      - transactions
+    sasl:
+      enabled: true
+      mechanism: PLAIN
+      username: "${KAFKA_AUTH_USER:?connecting to kafka requires a username}"
+      password: "${KAFKA_AUTH_PASSWORD:?connecting to kafka requires a password}"
+sinks:
+  kafka:
+    type: kafka
+    inputs:
+      - datain
+    bootstrap_servers: kafka-controller-0.kafka-controller-headless.kafka.svc.cluster.local:9092,kafka-controller-1.kafka-controller-headless.kafka.svc.cluster.local:9092,kafka-controller-2.kafka-controller-headless.kafka.svc.cluster.local:9092
+    topic: transactions
+    encoding:
+      codec: json
+    sasl:
+      enabled: true
+      mechanism: PLAIN
+      username: "${KAFKA_AUTH_USER:?connecting to kafka requires a username}"
+      password: "${KAFKA_AUTH_PASSWORD:?connecting to kafka requires a password}"
+  console:
+    type: console
+    inputs:
+      - kafka_to_clickhouse_remap
+    target: stdout
+    encoding:
+      codec: json
+  kafka-to-clickhouse:
+    type: clickhouse
+    inputs:
+      - kafka_to_clickhouse_remap
+    database: personal
+    table: transactions
+    date_time_best_effort: true
+    endpoint: clickhouse.clickhouse.svc.cluster.local:8123
+    auth:
+      strategy: basic
+      user: "${CLICKHOUSE_AUTH_USER:?connecting to kafka requires a username}"
+      password: "${CLICKHOUSE_AUTH_PASSWORD:?connecting to kafka requires a username}"
+    acknowledgements:
+      enabled: true
+transforms:
+  kafka_to_clickhouse_remap:
+    type: remap
+    inputs:
+      - transactions
+    source: |-
+      .message.timestamp = .timestamp
+      . = .message
+      .amount = replace!(.amount, r'\u{a0}', " ")
+      .amount = replace(.amount, ",", ".")
+      amount_parts = split(.amount, " ", limit: 2)
+      .amount = to_float!(amount_parts[0])
+      .currency = amount_parts[1]
