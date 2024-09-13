@@ -60,3 +60,5 @@ extraVolumeMounts:
 args:
   - --config-dir
   - "/vector/"
+image:
+  base: "debian"
