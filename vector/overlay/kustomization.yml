@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+configMapGenerator:
+- files:
+  - configs/sources/http_server_data_in.yml
+  name: vector-sources
+- files:
+  - configs/sinks/http_to_kafka.yml
+  name: vector-sinks
+  namespace: vector
