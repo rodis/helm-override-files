@@ -1,0 +1,11 @@
+services:
+  vector:
+    image: timberio/vector:0.40.1-debian
+    ports:
+      - '18080:80'
+    volumes:
+    - ./configs:/vector
+    environment:
+      - VECTOR_LOG=debug
+      - VECTOR_CONFIG_DIR=/vector
+    env_file: vector-env-vars

@@ -1,0 +1,9 @@
+type: remap
+inputs:
+  - transactions_route.cc
+source: |-
+  .message.amount = replace!(.message.amount, r'\u{a0}', " ")
+  .message.amount = replace(.message.amount, ",", ".")
+  amount_parts = split(.message.amount, " ", limit: 2)
+  .message.amount = to_float!(amount_parts[0])
+  .message.currency = amount_parts[1]

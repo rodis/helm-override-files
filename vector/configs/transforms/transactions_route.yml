@@ -1,0 +1,13 @@
+type: route
+inputs:
+  - transactions_remap
+route:
+  cc:
+    type: vrl
+    source: .subpath == "cc"
+  car:
+    type: vrl
+    source: .subpath == "car"
+  test:
+    type: vrl
+    source: .subpath == "test"

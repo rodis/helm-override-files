@@ -1,0 +1,16 @@
+type: kafka
+inputs:
+  - transactions_route.*
+acknowledgements:
+  enabled: true
+librdkafka_options:
+  allow.auto.create.topics: "false"
+bootstrap_servers: "kafka-controller-0.kafka-controller-headless.kafka.svc.cluster.local:9092,kafka-controller-1.kafka-controller-headless.kafka.svc.cluster.local:9092,kafka-controller-2.kafka-controller-headless.kafka.svc.cluster.local:9092"
+topic: "{{topic}}"
+encoding:
+  codec: json
+sasl:
+  enabled: true
+  mechanism: PLAIN
+  username: "${KAFKA_AUTH_USER:?connecting to kafka requires a username}"
+  password: "${KAFKA_AUTH_PASSWORD:?connecting to kafka requires a password}"

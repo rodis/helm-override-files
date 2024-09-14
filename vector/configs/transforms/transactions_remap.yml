@@ -1,0 +1,7 @@
+type: remap
+inputs:
+  - http_server_data_in_route.transactions
+source: |-
+  .subpath =  split!(.path, "/", limit:4)[2]
+  .topic = .subpath
+  .message.timestamp = .timestamp

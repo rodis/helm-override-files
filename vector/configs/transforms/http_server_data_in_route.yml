@@ -1,0 +1,7 @@
+type: route
+inputs:
+  - http_server_data_in_remap
+route:
+  transactions:
+    type: vrl
+    source: .subpath == "transactions"

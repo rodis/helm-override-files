@@ -1,0 +1,5 @@
+type: remap
+inputs:
+  - http_server_data_in
+source: |-
+  .subpath = split!(.path, "/", limit:4)[1]

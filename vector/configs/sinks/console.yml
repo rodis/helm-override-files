@@ -1,0 +1,7 @@
+type: console
+inputs:
+  - transactions_from_kafka
+encoding:
+  codec: json
+  json:
+    prettify: true
