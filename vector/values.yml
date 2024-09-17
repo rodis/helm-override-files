@@ -11,7 +11,7 @@ ingress:
   hosts:
     - host: vector.rods.me
       paths:
-        - path: (/|$)(.*)
+        - path: /(.*)
           pathType: ImplementationSpecific
           port:
             number: 80
