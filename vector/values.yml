@@ -52,6 +52,9 @@ extraVolumes:
   - name: vector-sources
     configMap:
       name: vector-sources
+  - name: vector-transforms
+    configMap:
+      name: vector-transforms
   - name: vector-sinks
     configMap:
       name: vector-sinks
