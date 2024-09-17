@@ -5,10 +5,13 @@ customConfig:
 ingress:
   enabled: true
   className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
   hosts:
     - host: vector.rods.me
       paths:
-        - path: /
+        - path: (/|$)(.*)
           pathType: ImplementationSpecific
           port:
             number: 80

@@ -1,0 +1,5 @@
+type: remap
+inputs:
+  - transactions_from_kafka_to_clickhouse
+source: |-
+  .message._table = .topic

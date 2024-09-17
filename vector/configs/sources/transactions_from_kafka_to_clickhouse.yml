@@ -1,6 +1,6 @@
 type: kafka
 bootstrap_servers: kafka-controller-0.kafka-controller-headless.kafka.svc.cluster.local:9092,kafka-controller-1.kafka-controller-headless.kafka.svc.cluster.local:9092,kafka-controller-2.kafka-controller-headless.kafka.svc.cluster.local:9092
-group_id: transactions-to-mongodb
+group_id: transactions-to-clickhouse
 decoding:
   codec: json
 topics:

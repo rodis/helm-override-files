@@ -1,0 +1,16 @@
+type: clickhouse
+inputs:
+  - transactions_to_clickhouse_remap
+database: personal
+table: "{{_table}}"
+date_time_best_effort: true
+endpoint: clickhouse.clickhouse.svc.cluster.local:8123
+auth:
+  strategy: basic
+  user: "${CLICKHOUSE_AUTH_USER:?connecting to kafka requires a username}"
+  password: "${CLICKHOUSE_AUTH_PASSWORD:?connecting to kafka requires a username}"
+acknowledgements:
+  enabled: true
+encoding:
+  except_fields:
+    - _table

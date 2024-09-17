@@ -1,6 +1,6 @@
 type: route
 inputs:
-  - transactions_remap
+  - transactions_from_kafka_to_clickouse_remap
 route:
   cc:
     type: vrl

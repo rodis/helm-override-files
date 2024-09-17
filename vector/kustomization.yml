@@ -1,30 +1,30 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- all.yml
+  - all.yml
 patchesStrategicMerge:
-- patch-vector-sources-configmap.yml
-- patch-vector-sinks-configmap.yml
+  - patch-vector-sources-configmap.yml
+  - patch-vector-sinks-configmap.yml
 generatorOptions:
   disableNameSuffixHash: true
 configMapGenerator:
-- files:
-  - configs/sinks/console.yml
-  - configs/sinks/transactions_to_kafka.yml
-  name: vector-sinks
-  options:
-    disableNameSuffixHash: true
-- files:
-  - configs/sources/http_server_data_in.yml
-  - configs/sources/transactions_from_kafka.yml
-  name: vector-sources
-  options:
-    disableNameSuffixHash: true
-- files:
-  - configs/transforms/http_server_data_in_remap.yml
-  - configs/transforms/http_server_data_in_route.yml
-  - configs/transforms/transactions_remap.yml
-  - configs/transforms/transactions_route.yml
-  name: vector-transforms
-  options:
-    disableNameSuffixHash: true
+  - files:
+      - configs/sinks/console.yml
+      - configs/sinks/transactions_to_kafka.yml
+    name: vector-sinks
+    options:
+      disableNameSuffixHash: true
+  - files:
+      - configs/sources/http_server_data_in.yml
+      - configs/sources/transactions_from_kafka.yml
+    name: vector-sources
+    options:
+      disableNameSuffixHash: true
+  - files:
+      - configs/transforms/http_server_data_in_remap.yml
+      - configs/transforms/http_server_data_in_route.yml
+      - configs/transforms/transactions_remap_in.yml
+      - configs/transforms/transactions_route_in.yml
+    name: vector-transforms
+    options:
+      disableNameSuffixHash: true

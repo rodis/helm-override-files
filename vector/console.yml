@@ -1,0 +1,10 @@
+type: console
+inputs:
+  - transactions_from_kafka_to_clickhouse_cc_remap
+  - transactions_from_kafka_to_clickouse_route.car
+  - transactions_from_kafka_to_clickouse_route.test
+  - transactions_from_kafka_to_clickhouse
+encoding:
+  codec: json
+  json:
+    prettify: true

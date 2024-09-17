@@ -1,6 +1,8 @@
 type: kafka
 inputs:
-  - transactions_route.*
+  - transactions_route_in.cc
+  - transactions_route_in.car
+  - transactions_route_in.test
 acknowledgements:
   enabled: true
 librdkafka_options:

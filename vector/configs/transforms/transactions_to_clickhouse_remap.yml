@@ -1,0 +1,7 @@
+type: remap
+inputs:
+  - transactions_from_kafka_to_clickhouse_cc_remap
+  - transactions_from_kafka_to_clickouse_route.car
+  - transactions_from_kafka_to_clickouse_route.test
+source: |-
+  . = .message

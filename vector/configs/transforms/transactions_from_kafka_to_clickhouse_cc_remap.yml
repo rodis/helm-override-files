@@ -1,6 +1,6 @@
 type: remap
 inputs:
-  - transactions_route.cc
+  - transactions_from_kafka_to_clickouse_route.cc
 source: |-
   .message.amount = replace!(.message.amount, r'\u{a0}', " ")
   .message.amount = replace(.message.amount, ",", ".")
