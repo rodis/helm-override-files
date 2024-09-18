@@ -1,0 +1,7 @@
+type: console
+inputs:
+  - http_server_data_in
+encoding:
+  codec: json
+  json:
+    prettify: true
