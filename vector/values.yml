@@ -15,8 +15,7 @@ ingress:
           pathType: ImplementationSpecific
           port:
             number: 80
-persistence:
-  enabled: true
+replicas: 3
 service:
   ports:
     - name: http-server
