@@ -2,6 +2,12 @@
   become: false
   gather_facts: no
   tasks:
+    - name: Create a k8s namespace
+      kubernetes.core.k8s:
+        name: akanda
+        api_version: v1
+        kind: Namespace
+        state: present
     - name: Install kafka credential secret
       kubernetes.core.k8s:
         state: present
