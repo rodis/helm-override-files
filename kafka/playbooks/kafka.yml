@@ -1,0 +1,9 @@
+- hosts: localhost
+  become: false
+  gather_facts: no
+  tasks:
+    - name: Install kafka credential secret
+      kubernetes.core.k8s:
+      state: present
+      src: ../kafka-credentials.yml
+      apply: true
