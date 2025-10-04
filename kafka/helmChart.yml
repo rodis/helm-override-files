@@ -1,0 +1,8 @@
+apiVersion: builtin
+kind: HelmChartInflationGenerator
+metadata:
+  name: kafka
+name: kafka
+releaseName: kafka
+repo: oci://registry-1.docker.io/bitnamicharts
+valuesFile: values.yml
