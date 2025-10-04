@@ -16,4 +16,4 @@
     - name: Install Kafka from Helm and kustomize
       kubernetes.core.k8s:
         state: present
-        definition: "{{ lookup('kubernetes.core.kustomize', dir='.', binary_path='/usr/local/bin/kustomize', enable_helm=True) }}"
+        definition: "{{ lookup('kubernetes.core.kustomize', dir='.', binary_path='/usr/bin/kustomize', enable_helm=True) }}"
