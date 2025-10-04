@@ -1,6 +1,6 @@
 - hosts: localhost
   become: false
-  gather_facts: no
+  gather_facts: false
   tasks:
     - name: Create a Kafka namespace
       kubernetes.core.k8s:
@@ -13,3 +13,7 @@
         state: present
         src: ../kafka-sasl-credentials.yml
         apply: true
+    - name: Install Kafka from Helm and kustomize
+      kubernetes.core.k8s:
+        state: present
+        definition: "{{ lookup('kubernetes.core.kustomize', dir='.', binary_path='/usr/local/bin/kustomize', enable_helm=True) }}"

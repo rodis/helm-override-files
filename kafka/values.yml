@@ -1,0 +1,21 @@
+image:
+  repository: bitnamilegacy/kafka
+broker:
+  replicaCount: 3
+  persistence:
+    enabled: false
+  resources:
+    requests:
+      cpu: 1
+      memory: 1Gi
+    limits:
+      cpu: 2
+      memory: 2Gi
+controller:
+  replicaCount: 3
+  persistence:
+    enabled: false
+service:
+  clusterIP: None
+sasl:
+  existingSecret: kafka-sasl-credentials

@@ -1,0 +1,8 @@
+- hosts: localhost
+  become: false
+  gather_facts: false
+  tasks:
+    - name: Install Kafka from Helm and kustomize
+      kubernetes.core.k8s:
+        state: absent
+        definition: "{{ lookup('kubernetes.core.kustomize', dir='.', binary_path='/usr/local/bin/kustomize', enable_helm=True) }}"
