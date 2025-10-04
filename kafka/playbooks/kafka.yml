@@ -11,5 +11,5 @@
     - name: Install kafka credential secret
       kubernetes.core.k8s:
         state: present
-        src: ../kafka-credentials.yml
+        src: ../kafka-sasl-credentials.yml
         apply: true
