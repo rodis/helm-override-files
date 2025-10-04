@@ -13,9 +13,6 @@
         state: present
         src: ../kafka-sasl-credentials.yml
         apply: true
-    - name: print current playbook directory
-      ansible.builtin.debug:
-        var: playbook_dir
     - name: Install Kafka from Helm and kustomize
       kubernetes.core.k8s:
         state: present
