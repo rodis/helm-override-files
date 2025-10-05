@@ -1,0 +1,10 @@
+config:
+  kafka:
+    brokers:
+      - kafka-broker-0.kafka-broker-headless.kafka.svc.cluster.local:9092
+      - kafka-broker-1.kafka-broker-headless.kafka.svc.cluster.local:9092
+      - kafka-broker-2.kafka-broker-headless.kafka.svc.cluster.local:9092
+    sasl:
+      enabled: true
+      username: Cvky5GNmzT
+      password: "aWZX70POx6sQd5xyS4UbvSVpPVJU7xOgnjcl01ynK2x"

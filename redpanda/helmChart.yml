@@ -1,0 +1,9 @@
+apiVersion: builtin
+kind: HelmChartInflationGenerator
+metadata:
+  name: redpanda
+name: console
+releaseName: redpanda
+repo: https://charts.redpanda.com
+valuesFile: values.yml
+namespace: redpanda
