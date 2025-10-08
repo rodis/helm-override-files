@@ -8,3 +8,9 @@ config:
       enabled: true
       username: Cvky5GNmzT
       password: "aWZX70POx6sQd5xyS4UbvSVpPVJU7xOgnjcl01ynK2x"
+
+tests:
+  enabled: false
+
+secret:
+  create: false
