@@ -7,6 +7,11 @@
         src: "{{ playbook_dir }}/../namespace.yml"
         state: present
         apply: True
+    - name: Install kafka credential secret
+      kubernetes.core.k8s:
+        src: "{{ playbook_dir }}/../redpanda-kafka-sasl-credentials.yml"
+        state: present
+        apply: true
     - name: Install Redpanda from Helm and kustomize
       kubernetes.core.k8s:
         state: present
