@@ -31,7 +31,7 @@
         src: "{{ playbook_dir }}/../kustomization.yml"
         dest: "{{ awx_operator_dir.path }}"
         mode: '0644'
-    - name: Install AWX with kustomize
-      kubernetes.core.k8s:
-        state: present
-        definition: "{{ lookup('kubernetes.core.kustomize', dir=awx_operator_dir.path, binary_path='/usr/bin/kustomize') }}"
+#    - name: Install AWX with kustomize
+#      kubernetes.core.k8s:
+#        state: present
+#        definition: "{{ lookup('kubernetes.core.kustomize', dir=awx_operator_dir.path, binary_path='/usr/bin/kustomize') }}"
