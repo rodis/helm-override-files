@@ -17,16 +17,10 @@
         api_version: v1
         kind: Namespace
         state: present
-#    - name: Copy namespace file to awx operator dir
-#      ansible.builtin.copy:
-#        src: "{{ playbook_dir }}/../namespace.yml"
-#        dest: "{{ awx_operator_dir.path }}"
-#        mode: '0644'
-    - name: Copy postgres configuration file to awx operator dir
-      ansible.builtin.copy:
+    - name: Create doppler CRD for postgres configuration
+      kubernetes.core.k8s:
         src: "{{ playbook_dir }}/../postgres-configuration.yml"
-        dest: "{{ awx_operator_dir.path }}"
-        mode: '0644'
+        state: present
     - name: Copy awx configuration file to awx operator dir
       ansible.builtin.copy:
         src: "{{ playbook_dir }}/../awx.yml"
