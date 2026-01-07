@@ -11,12 +11,12 @@
         repo: 'https://github.com/ansible/awx-operator.git'
         dest: "{{ awx_operator_dir.path }}"
         version: 2.19.1
-#    - name: Create a k8s namespace for awx
-#      kubernetes.core.k8s:
-#        name: awx
-#        api_version: v1
-#        kind: Namespace
-#        state: present
+    - name: Create a k8s namespace for awx
+      kubernetes.core.k8s:
+        name: awx
+        api_version: v1
+        kind: Namespace
+        state: present
 #    - name: Copy namespace file to awx operator dir
 #      ansible.builtin.copy:
 #        src: "{{ playbook_dir }}/../namespace.yml"
