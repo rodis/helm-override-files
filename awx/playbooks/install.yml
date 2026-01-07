@@ -17,7 +17,27 @@
 #        api_version: v1
 #        kind: Namespace
 #        state: present
+    - name: Copy namespace file to awx operator dir
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/../namespace.yml"
+        dest: "{{ awx_operator_dir.path }}"
+        mode: '0644'
+    - name: Copy postgres configuration file to awx operator dir
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/../postgres-configuration.yml"
+        dest: "{{ awx_operator_dir.path }}"
+        mode: '0644'
+    - name: Copy awx configuration file to awx operator dir
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/../awx.yml"
+        dest: "{{ awx_operator_dir.path }}"
+        mode: '0644'
+    - name: Copy Kustomization file to awx operator dir
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/../kustomization.yml"
+        dest: "{{ awx_operator_dir.path }}"
+        mode: '0644'
     - name: Install AWX with kustomize
       kubernetes.core.k8s:
         state: present
-        definition: "{{ lookup('kubernetes.core.kustomize', dir=playbook_dir + '/..', binary_path='/usr/bin/kustomize') }}"
+        definition: "{{ lookup('kubernetes.core.kustomize', dir=awx_operator_dir.path, binary_path='/usr/bin/kustomize') }}"
