@@ -1,0 +1,9 @@
+apiVersion: awx.ansible.com/v1beta1
+kind: AWX
+metadata:
+  name: awx
+spec:
+  service_type: clusterip
+  postgres_configuration_secret: postgres-configuration
+  task_replicas: 6
+  ipv6_disabled: true

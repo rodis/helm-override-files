@@ -1,0 +1,16 @@
+apiVersion: secrets.doppler.com/v1alpha1
+kind: DopplerSecret
+metadata:
+  name: awx-postgres-configuration
+  namespace: doppler-operator-system
+spec:
+  tokenSecret:
+    name: doppler-token-secret
+    namespace: doppler-operator-system
+  project: iad2-infra-postgres-configuration
+  config: prd
+  nameTransformer: lower-kebab
+  managedSecret:
+    name: postgres-configuration
+    namespace: awx
+    type: Opaque
