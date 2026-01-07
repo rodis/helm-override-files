@@ -32,4 +32,4 @@
             namespace: doppler-operator-system
           type: Opaque
           data:
-            doppler_token: "{{ lookup('env', 'DOPPLER_TOKEN_SECRET') | b64encode }}"
+            serviceToken: "{{ lookup('env', 'DOPPLER_TOKEN_SECRET') | b64encode }}"
