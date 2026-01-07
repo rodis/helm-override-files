@@ -21,6 +21,14 @@
       kubernetes.core.k8s:
         src: "{{ playbook_dir }}/../postgres-configuration.yml"
         state: present
+    - name: Create doppler CRD for awx admin password
+      kubernetes.core.k8s:
+        src: "{{ playbook_dir }}/../awx-admin-password.yml"
+        state: present
+    - name: Create doppler CRD for awx secret key
+      kubernetes.core.k8s:
+        src: "{{ playbook_dir }}/../awx-secret-key.yml"
+        state: present
     - name: Copy awx configuration file to awx operator dir
       ansible.builtin.copy:
         src: "{{ playbook_dir }}/../awx.yml"
