@@ -1,0 +1,23 @@
+
+- name: Install doppler secrets operator
+  hosts: localhost
+  become: false
+  gather_facts: false
+  tasks:
+    - name: Create a temporary directory
+      ansible.builtin.tempfile:
+        state: directory
+        suffix: doppler
+      register: doppler_operator_dir
+    - name: Compose path
+      set_fact:
+        doppler_operator_manifest_path: "{{ doppler_operator_dir.path }}/doppler-secrets-operator.yaml"
+    - name: Download doppler secrets operator manifest
+      ansible.builtin.get_url:
+        url: https://github.com/DopplerHQ/kubernetes-operator/releases/latest/download/recommended.yaml
+        dest: "{{ doppler_operator_manifest_path }}"
+        mode: '0664'
+    - name: Apply doppler manifest to the cluster.
+      kubernetes.core.k8s:
+        state: present
+        src: "{{ doppler_operator_manifest_path }}"
