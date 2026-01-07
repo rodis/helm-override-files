@@ -7,7 +7,7 @@ spec:
   tokenSecret:
     name: doppler-token-secret
     namespace: doppler-operator-system
-  project: iad2-infra-postgres-configuration
+  project: infra-awx-postgres-configuration
   config: prd
   nameTransformer: lower-kebab
   managedSecret:
