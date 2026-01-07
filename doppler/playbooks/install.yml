@@ -21,3 +21,15 @@
       kubernetes.core.k8s:
         state: present
         src: "{{ doppler_operator_manifest_path }}"
+    - name: Create Doppler Secret Token
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Secret
+          metadata:
+            name: doppler-token-secret
+            namespace: doppler-operator-system
+          type: Opaque
+          data:
+            doppler_token: "{{ lookup('env', 'DOPPLER_TOKEN_SECRET') | b64encode }}"
