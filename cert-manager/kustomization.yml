@@ -1,0 +1,5 @@
+generators:
+  - helmChart.yml
+
+resources:
+  - le-prod-cluster-issuer.yml

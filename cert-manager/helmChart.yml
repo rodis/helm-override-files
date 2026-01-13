@@ -1,0 +1,9 @@
+apiVersion: builtin
+kind: HelmChartInflationGenerator
+metadata:
+  name: cert-manager
+name: cert-manager
+releaseName: cert-manager
+repo: oci://quay.io/jetstack/charts
+valuesFile: values.yml
+namespace: cert-manager
