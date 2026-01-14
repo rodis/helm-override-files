@@ -10,7 +10,7 @@
     - name: Generate an additional values file from a template
       ansible.builtin.template:
         src: ./templates/generated-values.j2
-        dest: ./generated-values.yml
+        dest: "{{ playbook_dir }}/../generated-values.yml"
     - name: Install nginx-ingress-controller from Helm and kustomize
       kubernetes.core.k8s:
         state: present
