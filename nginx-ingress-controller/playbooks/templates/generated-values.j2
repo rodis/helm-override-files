@@ -1,5 +1,5 @@
 service:
   externalIPs:
     {% for host in groups['kube_control_plane'] -%}
-    - {{ hostvars[host]['ansible_default_ipv4'] }}
+    - {{ hostvars[host]['ansible_default_ipv4']['address'] }}
     {% endfor %}
