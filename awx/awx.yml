@@ -7,3 +7,7 @@ spec:
   postgres_configuration_secret: postgres-configuration
   task_replicas: 6
   ipv6_disabled: true
+  ingress_type: ingress
+  ingress_class_name: nginx
+  ingress_hosts:
+    - hostname: infra.rods.me
