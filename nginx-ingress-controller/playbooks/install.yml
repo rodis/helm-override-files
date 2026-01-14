@@ -1,4 +1,5 @@
 - hosts: localhost
+  become: true
   gather_facts: false
   tasks:
     - name: Create the nginx-ingress-controller namespace
