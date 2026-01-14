@@ -1,0 +1,9 @@
+image:
+  repository: bitnamilegacy/nginx-ingress-controller
+  tag: 1.13.1
+defaultBackend:
+  image:
+    repository: bitnamilegacy/nginx
+    tag: 1.29.1
+service:
+  type: ClusterIP

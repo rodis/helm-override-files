@@ -1,0 +1,11 @@
+apiVersion: builtin
+kind: HelmChartInflationGenerator
+metadata:
+  name: nginx-ingress-controller
+name: nginx-ingress-controller
+releaseName: nginx-ingress-controller
+repo: oci://registry-1.docker.io/bitnamicharts
+valuesFile: values.yml
+additionalValuesFiles:
+  - generated-values.yml
+namespace: nginx-ingress-controller
