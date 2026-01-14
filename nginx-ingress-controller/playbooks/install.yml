@@ -1,5 +1,5 @@
 - hosts: localhost
-  become: false
+  gather_facts: false
   tasks:
     - name: Create the nginx-ingress-controller namespace
       kubernetes.core.k8s:
