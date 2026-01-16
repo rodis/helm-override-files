@@ -1,0 +1,7 @@
+- hosts: localhost
+  gather_facts: no
+  tasks:
+    - shell: kubectl get no
+      register: results
+
+    - debug: var=results.stdout_lines
