@@ -4,3 +4,7 @@
     - name: Display KUBRCONFIG environment variable
       ansible.builtin.debug:
         msg: "'{{ lookup('ansible.builtin.env', 'KUBECONFIG') }}' is the KUBECONFIG environment variable."
+    - name: Get kubernetes nodes
+      shell: kubectl get nodes
+      register: ps
+    - debug: var=ps.stdout_lines
