@@ -1,7 +1,6 @@
 - hosts: localhost
   gather_facts: no
   tasks:
-    - shell: env
-      register: results
-
-    - debug: var=results.stdout_lines
+    - name: Display KUBRCONFIG environment variable
+      ansible.builtin.debug:
+        msg: "'{{ lookup('ansible.builtin.env', 'KUBECONFIG') }}' is the KUBECONFIG environment variable."
