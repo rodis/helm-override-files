@@ -5,8 +5,7 @@ defaultBackend:
   image:
     repository: bitnamilegacy/nginx
     tag: 1.29.1
+hostNetwork: true
 kind: DaemonSet
-daemonset:
-  useHostPort: true
 nodeSelector:
   node-role.kubernetes.io/control-plane: ""
