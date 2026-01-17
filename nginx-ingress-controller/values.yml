@@ -5,5 +5,8 @@ defaultBackend:
   image:
     repository: bitnamilegacy/nginx
     tag: 1.29.1
-service:
-  type: ClusterIP
+kind: DaemonSet
+daemonset:
+  useHostPort: true
+nodeSelector:
+  node-role.kubernetes.io/control-plane: ""
