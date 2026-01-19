@@ -5,6 +5,7 @@ controller:
     create: false
   nodeSelector:
     node-role.kubernetes.io/control-plane: ""
+  enableCustomResources: false
   tolerations:
     - key: "node-role.kubernetes.io/control-plane"
       operator: "Equal"
