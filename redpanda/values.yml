@@ -29,7 +29,7 @@ ingress:
       paths:
         - path: /redpanda
           pathType: ImplementationSpecific
-  tls:
-    - secretName: redpanda-tls
-      hosts:
-        - dev.rods.me
+#  tls:
+#    - secretName: redpanda-tls
+#      hosts:
+#        - dev.rods.me
