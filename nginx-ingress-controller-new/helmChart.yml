@@ -1,9 +1,9 @@
 apiVersion: builtin
 kind: HelmChartInflationGenerator
 metadata:
-  name: nginx-ingress-controller
+  name: nginx-ingress
 name: nginx-ingress
 repo: oci://ghcr.io/nginx/charts
-releaseName: nginx-ingress-controller
-namespace: nginx-ingress-controller
+releaseName: nginx-ingress
+namespace: nginx-ingress
 valuesFile: values.yml
