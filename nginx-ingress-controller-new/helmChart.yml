@@ -4,6 +4,6 @@ metadata:
   name: nginx-ingress-controller
 name: nginx-ingress-controller
 releaseName: nginx-ingress
-repo: oci://ghcr.io/nginx/charts/nginx-ingress
+repo: oci://ghcr.io/nginx/charts
 valuesFile: values.yml
 namespace: nginx-ingress-controller
