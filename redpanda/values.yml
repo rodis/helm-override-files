@@ -23,12 +23,10 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: nginx
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    nginx.org/path-regex: "case_sensitive"
-    nginx.org/rewrite-target: /
   hosts:
-    - host: dev.rods.me
+    - host: redpanda.dev.rods.me
       paths:
-        - path: /redpanda(/|$)(.*)
+        - path: /
           pathType: ImplementationSpecific
 #  tls:
 #    - secretName: redpanda-tls
