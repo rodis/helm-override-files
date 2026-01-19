@@ -23,8 +23,9 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: nginx
     cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
   hosts:
-    - host: redpanda.rods.me
+    - host: dev.rods.me
       paths:
         - path: /
           pathType: ImplementationSpecific
