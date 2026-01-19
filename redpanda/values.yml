@@ -23,7 +23,7 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: nginx
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    nginx.org/rewrite-target:: /$2
+    nginx.org/rewrite-target: /$2
   hosts:
     - host: dev.rods.me
       paths:
