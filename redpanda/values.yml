@@ -6,8 +6,6 @@ config:
       - kafka-broker-2.kafka-broker-headless.kafka.svc.cluster.local:9092
     sasl:
       enabled: true
-  server:
-    stripPrefix: false
 
 extraEnvFrom:
   - secretRef:
