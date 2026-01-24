@@ -1,0 +1,12 @@
+# helm install traefik traefik/traefik
+# helm install traefik oci://ghcr.io/traefik/helm/traefik
+# helm install --debug traefik traefik/traefik --namespace traefik --values traefix_values.yml
+apiVersion: builtin
+kind: HelmChartInflationGenerator
+metadata:
+  name: traefik
+name: traefik
+releaseName: traefik
+repo: oci://ghcr.io/traefik/helm/traefik
+valuesFile: values.yml
+namespace: traefik

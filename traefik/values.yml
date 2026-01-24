@@ -1,0 +1,24 @@
+deployment:
+  kind: DaemonSet
+ingressRoute:
+  dashboard:
+    enabled: true
+service:
+  enabled: false
+logs:
+  general:
+    level: INFO
+  access:
+    enabled: true
+ports:
+  web:
+    hostPort: 80
+  websecure:
+    hostPort: 443
+nodeSelector:
+  node-role.kubernetes.io/control-plane: ""
+tolerations:
+  - key: "node-role.kubernetes.io/control-plane"
+    operator: "Equal"
+    value: ""
+    effect: "NoSchedule"

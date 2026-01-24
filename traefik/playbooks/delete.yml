@@ -1,0 +1,8 @@
+- hosts: localhost
+  become: false
+  gather_facts: false
+  tasks:
+    - name: Delete application from Helm and kustomize
+      kubernetes.core.k8s:
+        state: absent
+        definition: "{{ lookup('kubernetes.core.kustomize', dir=playbook_dir + '/..', binary_path='/usr/bin/kustomize', enable_helm=True) }}"
