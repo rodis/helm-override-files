@@ -9,4 +9,4 @@ spec:
     - redpanda.dev.rods.me
   issuerRef:
     kind: ClusterIssuer
-    name: letsencrypt-traefik-stage
+    name: letsencrypt-prod
