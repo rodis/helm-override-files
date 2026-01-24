@@ -7,6 +7,6 @@ metadata:
   name: traefik
 name: traefik
 releaseName: traefik
-repo: oci://ghcr.io/traefik/helm/traefik
+repo: https://traefik.github.io/charts
 valuesFile: values.yml
 namespace: traefik
