@@ -1,0 +1,19 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: redpanda-console
+  namespace: redpanda
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - match: Host(`redpanda.dev.rods.me`) && PathPrefix(`/`)
+      kind: Rule
+      services:
+        - kind: Service
+          name: redpanda-console
+          namespace: redpanda
+          port: 8080
+  tls:
+    secretName: redpanda-console

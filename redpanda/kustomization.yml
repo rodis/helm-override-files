@@ -1,2 +1,6 @@
 generators:
   - helmChart.yml
+
+resources:
+  - certificate.yml
+  - ingressroute.yml
