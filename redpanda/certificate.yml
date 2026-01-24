@@ -1,19 +1,12 @@
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
+apiVersion: cert-manager.io/v1
+kind: Certificate
 metadata:
-  name: redpanda-console
+  name: redpanda-certificate
   namespace: redpanda
 spec:
-  entryPoints:
-    - web
-    - websecure
-  routes:
-    - match: Host(`redpanda.dev.rods.me`) && PathPrefix(`/`)
-      kind: Rule
-      services:
-        - kind: Service
-          name: redpanda-console
-          namespace: redpanda
-          port: 8080
-  tls:
-    secretName: redpanda-console
+  secretName: redpanda-console
+  dnsNames:
+    - redpanda.dev.rods.me
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-traefik-stage
