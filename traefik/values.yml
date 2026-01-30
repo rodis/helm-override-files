@@ -2,7 +2,7 @@ deployment:
   kind: DaemonSet
 ingressRoute:
   dashboard:
-    enabled: false
+    enabled: true
 service:
   enabled: false
 logs:
