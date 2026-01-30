@@ -22,3 +22,6 @@ tolerations:
     operator: "Equal"
     value: ""
     effect: "NoSchedule"
+providers:
+  kubernetesIngressNginx:
+    enabled: true
