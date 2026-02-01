@@ -9,9 +9,26 @@ config:
 extraEnvFrom:
   - secretRef:
       name: kafka-sasl-credentials
-
 tests:
   enabled: false
-
 secret:
   create: false
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  hosts:
+    - host: redpanda.dev.rods.me
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: redpanda-console
+              port:
+                name: http
+tls:
+  - secretName: redpanda-tls
+    hosts:
+      - redpanda.dev.rods.me
