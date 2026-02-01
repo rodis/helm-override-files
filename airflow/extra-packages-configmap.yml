@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: apache-airflow-requirements
-  namespace: airflow
-data:
-  requirements.txt: |
-    apache-airflow-providers-apache-kafka
-    apache-airflow
