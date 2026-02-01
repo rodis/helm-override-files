@@ -7,6 +7,14 @@
         src: "{{ playbook_dir }}/../namespace.yml"
         state: present
         apply: True
+    - name: Install RBAC for Traefik
+      kubernetes.core.k8s:
+        state: present
+        src: https://raw.githubusercontent.com/traefik/traefik/v3.6/docs/content/reference/dynamic-configuration/kubernetes-crd-rbac.yml
+    - name: Install Traefik Resource Definitions
+      kubernetes.core.k8s:
+        state: present
+        src: https://raw.githubusercontent.com/traefik/traefik/v3.6/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
     - name: Install application from Helm and kustomize
       kubernetes.core.k8s:
         state: present
