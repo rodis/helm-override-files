@@ -23,11 +23,6 @@ ingress:
       paths:
         - path: /
           pathType: Prefix
-          backend:
-            service:
-              name: redpanda-console
-              port:
-                name: http
 tls:
   - secretName: redpanda-tls
     hosts:
