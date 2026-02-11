@@ -12,6 +12,9 @@
         src: "{{ playbook_dir }}/../redpanda-kafka-sasl-credentials.yml"
         state: present
         apply: true
+    - name: Debug the kustomize output
+      debug:
+        msg: "{{ lookup('ansible.builtin.vars', 'environment') }}"
     - name: Install Redpanda from Helm and kustomize
       kubernetes.core.k8s:
         state: present
