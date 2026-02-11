@@ -2,11 +2,11 @@
   become: false
   gather_facts: false
   tasks:
-    - name: Create a Redpanda namespace
-      kubernetes.core.k8s:
-        src: "{{ playbook_dir }}/../namespace.yml"
-        state: present
-        apply: True
+#    - name: Create a Redpanda namespace
+#      kubernetes.core.k8s:
+#        src: "{{ playbook_dir }}/../namespace.yml"
+#        state: present
+#        apply: True
     - name: Install kafka credential secret
       kubernetes.core.k8s:
         src: "{{ playbook_dir }}/../redpanda-kafka-sasl-credentials.yml"
