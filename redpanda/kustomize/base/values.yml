@@ -19,11 +19,11 @@ ingress:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
   hosts:
-    - host: redpanda.dev.rods.me
+    - host: --placeholder--
       paths:
         - path: /
           pathType: Prefix
   tls:
     - secretName: redpanda-tls
       hosts:
-        - redpanda.dev.rods.me
+        - --placeholder--

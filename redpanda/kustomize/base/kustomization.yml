@@ -1,0 +1,4 @@
+generators:
+  - helmChart.yml
+resources:
+  - namespace.yml
