@@ -14,7 +14,7 @@
         apply: true
     - name: Debug the kustomize output
       debug:
-        var: {{ environment }}
+        var: "{{ environment }}"
     - name: Install Redpanda from Helm and kustomize
       kubernetes.core.k8s:
         state: present
