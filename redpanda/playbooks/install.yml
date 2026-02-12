@@ -1,6 +1,6 @@
 - hosts: localhost
   become: false
-  gather_facts: false
+  gather_facts: true
   tasks:
 #    - name: Create a Redpanda namespace
 #      kubernetes.core.k8s:
