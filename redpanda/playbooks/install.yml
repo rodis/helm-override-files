@@ -14,7 +14,7 @@
         apply: true
     - name: Debug the kustomize output
       debug:
-        msg: hostvars[inventory_hostname]
+        var: hostvars[inventory_hostname]
     - name: Install Redpanda from Helm and kustomize
       kubernetes.core.k8s:
         state: present
