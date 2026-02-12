@@ -18,4 +18,4 @@
     - name: Install Redpanda from Helm and kustomize
       kubernetes.core.k8s:
         state: present
-        definition: "{{ lookup('kubernetes.core.kustomize', dir=playbook_dir + '/../' + lookup('ansible.builtin.vars', 'environment'), binary_path='/usr/bin/kustomize', enable_helm=True) }}"
+        definition: "{{ lookup('kubernetes.core.kustomize', dir=playbook_dir + '/../kustomize/overlays/' + environment, binary_path='/usr/bin/kustomize', enable_helm=True) }}"
