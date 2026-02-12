@@ -15,8 +15,8 @@
         apply: true
     - name: Debug the kustomize output
       debug:
-        var: my_environment
+        var: context
     - name: Install Redpanda from Helm and kustomize
       kubernetes.core.k8s:
         state: present
-        definition: "{{ lookup('kubernetes.core.kustomize', dir=playbook_dir + '/../kustomize/overlays/' + environment, binary_path='/usr/bin/kustomize', enable_helm=True) }}"
+        definition: "{{ lookup('kubernetes.core.kustomize', dir=playbook_dir + '/../kustomize/overlays/' + context, binary_path='/usr/bin/kustomize', enable_helm=True) }}"
