@@ -1,0 +1,13 @@
+resources:
+  - ../../base
+patches:
+  - target:
+      kind: Ingress
+      name: redpanda-console
+    patch: |-
+      - op: replace
+        path: /spec/rules/0/host
+        value: redpanda.prod.rods.me
+      - op: replace
+        path: /spec/tls/0/hosts
+        value: [redpanda.prod.rods.me]
