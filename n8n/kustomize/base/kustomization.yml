@@ -1,5 +1,2 @@
-resources:
-  - namespace.yml
-
 generators:
   - helmChart.yml
