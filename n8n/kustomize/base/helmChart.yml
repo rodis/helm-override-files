@@ -4,6 +4,6 @@ metadata:
   name: n8n
 name: n8n
 releaseName: n8n
-repo: https://community-charts.github.io/helm-charts/community-charts/n8n
+repo: https://community-charts.github.io/helm-charts
 valuesFile: values.yml
 namespace: n8n
