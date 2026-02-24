@@ -1,2 +1,7 @@
 generators:
   - helmChart.yml
+
+resources:
+  - namespace.yml
+
+namespace: n8n
