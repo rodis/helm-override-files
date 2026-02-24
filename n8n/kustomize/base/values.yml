@@ -1,3 +1,7 @@
+main:
+  extraEnvVars:
+    - name: N8N_LISTEN_ADDRESS
+      value: 0.0.0.0
 ingress:
   enabled: true
   className: nginx
