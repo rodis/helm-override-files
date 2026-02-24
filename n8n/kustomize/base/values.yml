@@ -1,0 +1,14 @@
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  hosts:
+    - host: --placeholder--
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: n8n-tls
+      hosts:
+        - --placeholder--

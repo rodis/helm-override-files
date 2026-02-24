@@ -1,0 +1,9 @@
+apiVersion: builtin
+kind: HelmChartInflationGenerator
+metadata:
+  name: n8n
+name: community-charts/n8n
+releaseName: n8n
+repo: https://community-charts.github.io/helm-charts
+valuesFile: values.yml
+namespace: n8n

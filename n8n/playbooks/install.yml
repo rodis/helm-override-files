@@ -1,0 +1,14 @@
+- hosts: localhost
+  connection: local
+  become: false
+  gather_facts: false
+  tasks:
+#    - name: Install kafka credential secret
+#      kubernetes.core.k8s:
+#        src: "{{ playbook_dir }}/../redpanda-kafka-sasl-credentials.yml"
+#        state: present
+#        apply: true
+    - name: Install n8n from Helm and kustomize
+      kubernetes.core.k8s:
+        state: present
+        definition: "{{ lookup('kubernetes.core.kustomize', dir=playbook_dir + '/../kustomize/overlays/' + context, binary_path='/usr/bin/kustomize', enable_helm=True) }}"
