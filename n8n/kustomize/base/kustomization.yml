@@ -4,4 +4,8 @@ generators:
 resources:
   - namespace.yml
 
-namespace: n8n
+patches:
+  - target:
+      kind: ServiceAccount
+      name: n8n
+    path: patch-sa-namespace.yaml
