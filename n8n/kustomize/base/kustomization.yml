@@ -7,5 +7,19 @@ resources:
 patches:
   - target:
       kind: ServiceAccount
-      name: n8n
-    path: patch-sa-namespace.yaml
+    path: patch-namespace.yaml
+  - target:
+      kind: ConfigMap
+    path: patch-namespace.yaml
+  - target:
+      kind: Service
+    path: patch-namespace.yaml
+  - target:
+      kind: Deployment
+    path: patch-namespace.yaml
+  - target:
+      kind: PodDisruptionBudget
+    path: patch-namespace.yaml
+  - target:
+      kind: Ingress
+    path: patch-namespace.yaml
