@@ -25,4 +25,4 @@ externalPostgresql:
   username: "avnadmin"
   port: 19581
   database: n8n
-  existingSecret: ""
+  existingSecret: postgres-configuration
