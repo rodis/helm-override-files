@@ -3,6 +3,7 @@ generators:
 
 resources:
   - namespace.yml
+  - postgres-configuration.yml
 
 patches:
   - target:

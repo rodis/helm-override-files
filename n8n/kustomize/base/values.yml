@@ -15,3 +15,14 @@ ingress:
     - secretName: n8n-tls
       hosts:
         - --placeholder--
+
+# -- External PostgreSQL parameters
+db:
+  type: postgresdb
+
+externalPostgresql:
+  host: pg-af720c5-aware.j.aivencloud.com
+  username: "avnadmin"
+  port: 19581
+  database: n8n
+  existingSecret: ""

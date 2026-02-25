@@ -1,0 +1,16 @@
+apiVersion: secrets.doppler.com/v1alpha1
+kind: DopplerSecret
+metadata:
+  name: n8n-postgres-configuration
+  namespace: doppler-operator-system
+spec:`
+  tokenSecret:
+    name: doppler-token-secret
+    namespace: doppler-operator-system
+  project: aiven-postgres-n8n-configuration
+  config: prd
+  nameTransformer: lower-kebab
+  managedSecret:
+    name: postgres-configuration
+    namespace: n8n
+    type: Opaque
