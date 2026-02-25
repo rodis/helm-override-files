@@ -3,7 +3,7 @@ log:
 main:
   extraEnvVars:
     N8N_LISTEN_ADDRESS: "0.0.0.0"
-    SSL: "on"
+    DB_POSTGRESDB_SSL_REJECT_UNAUTHORIZED: "false"
 
 ingress:
   enabled: true
