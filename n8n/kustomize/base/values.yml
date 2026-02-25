@@ -19,9 +19,6 @@ ingress:
 # -- External PostgreSQL parameters
 db:
   type: postgresdb
-  postgresdb:
-    ssl:
-      enabled: true
 
 externalPostgresql:
   host: pg-af720c5-aware.j.aivencloud.com
