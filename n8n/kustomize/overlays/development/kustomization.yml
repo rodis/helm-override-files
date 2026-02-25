@@ -10,7 +10,7 @@ patches:
       - op: replace
         path: /spec/tls/0/hosts
         value: [n8n.dev.rods.me]
-    target:
+  - target:
       kind: Deployment
       name: n8n
     patch: |-
