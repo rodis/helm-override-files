@@ -3,6 +3,8 @@ log:
 main:
   extraEnvVars:
     N8N_LISTEN_ADDRESS: "0.0.0.0"
+    SSL: "on"
+
 ingress:
   enabled: true
   className: nginx
