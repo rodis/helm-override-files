@@ -10,3 +10,19 @@ patches:
       - op: replace
         path: /spec/tls/0/hosts
         value: [n8n.prod.rods.me]
+    target:
+      kind: Deployment
+      name: n8n
+    patch: |-
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: n8n
+          spec:
+            template:
+              spec:
+                containers:
+                  - name: n8n-main
+                    env:
+                      - name: N8N_EDITOR_BASE_URL
+                        value: n8n.prod.rods.me
