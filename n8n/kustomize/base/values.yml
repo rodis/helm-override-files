@@ -25,7 +25,7 @@ db:
   type: postgresdb
   postgresdb:
     ssl:
-      base64EncodedCertificateAuthorityFile: |
+      base64EncodedCertificateAuthorityFile: -|
       -----BEGIN CERTIFICATE-----
       MIIEQTCCAqmgAwIBAgIUNq+VjIvfa4KVlExuDi5od86JpHIwDQYJKoZIhvcNAQEM
       BQAwOjE4MDYGA1UEAwwvNGFiNDA0ZTItYTZmNC00MDY5LTgwNWUtOGFhOTJmOWQ5
