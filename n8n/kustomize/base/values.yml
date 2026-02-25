@@ -1,5 +1,5 @@
 log:
-  level: debug
+  level: info
 main:
   extraEnvVars:
     N8N_LISTEN_ADDRESS: "0.0.0.0"
