@@ -25,4 +25,4 @@ patches:
                   - name: n8n-main
                     env:
                       - name: N8N_EDITOR_BASE_URL
-                        value: n8n.prod.rods.me
+                        value: https://n8n.prod.rods.me
