@@ -4,6 +4,9 @@ main:
   extraEnvVars:
     N8N_LISTEN_ADDRESS: "0.0.0.0"
     DB_POSTGRESDB_SSL_REJECT_UNAUTHORIZED: "false"
+worker:
+  mode: queue
+  count: 3
 
 ingress:
   enabled: true
