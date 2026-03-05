@@ -7,6 +7,9 @@ main:
 worker:
   mode: queue
   count: 3
+redis:
+  enabled: true
+
 
 ingress:
   enabled: true
