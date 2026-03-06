@@ -4,23 +4,9 @@ generators:
 resources:
   - namespace.yml
   - postgres-configuration.yml
+  - n8n-encryption-key.yml
 
 patches:
   - target:
       kind: ServiceAccount|ConfigMap|Service|Deployment|PodDisruptionBudget|Ingress|Secret
     path: patch-namespace.yaml
-#  - target:
-#      kind: ConfigMap
-#    path: patch-namespace.yaml
-#  - target:
-#      kind: Service
-#    path: patch-namespace.yaml
-#  - target:
-#      kind: Deployment
-#    path: patch-namespace.yaml
-#  - target:
-#      kind: PodDisruptionBudget
-#    path: patch-namespace.yaml
-#  - target:
-#      kind: Ingress
-#    path: patch-namespace.yaml
