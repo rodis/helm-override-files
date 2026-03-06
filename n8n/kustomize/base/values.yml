@@ -39,3 +39,6 @@ externalPostgresql:
   port: 19581
   database: n8n
   existingSecret: postgres-configuration
+
+# -- The name of an existing secret with encryption key.
+existingEncryptionKeySecret: n8n-encryption-key
