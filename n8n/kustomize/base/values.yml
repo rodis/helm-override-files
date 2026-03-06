@@ -42,3 +42,6 @@ externalPostgresql:
 
 # -- The name of an existing secret with encryption key.
 existingEncryptionKeySecret: n8n-encryption-key
+license:
+  # -- The name of an existing secret with license activation key
+  existingActivationKeySecret: n8n-license-activation-key
