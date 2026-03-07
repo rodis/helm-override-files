@@ -18,6 +18,9 @@ webhook:
   # -- url is required to enable webhook paths in ingress, the value is not used in n8n configuration,
   # it is only used to generate ingress rules
   url: --placeholder--
+  extraEnvVars:
+    N8N_LISTEN_ADDRESS: "0.0.0.0"
+    DB_POSTGRESDB_SSL_REJECT_UNAUTHORIZED: "false"
 
 
 ingress:
