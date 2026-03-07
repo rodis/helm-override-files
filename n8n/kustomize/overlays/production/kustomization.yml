@@ -26,3 +26,5 @@ patches:
                     env:
                       - name: N8N_EDITOR_BASE_URL
                         value: https://n8n.prod.rods.me
+                      - name: WEBHOOK_URL
+                        value: https://n8n.prod.rods.me
