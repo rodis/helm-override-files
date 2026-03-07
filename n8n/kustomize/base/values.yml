@@ -13,6 +13,12 @@ worker:
 redis:
   enabled: true
 
+webhook:
+  mode: queue
+  # -- url is required to enable webhook paths in ingress, the value is not used in n8n configuration,
+  # it is only used to generate ingress rules
+  url: --placeholder--
+
 
 ingress:
   enabled: true
