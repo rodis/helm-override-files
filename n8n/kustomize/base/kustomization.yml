@@ -14,5 +14,16 @@ patches:
     path: patch-namespace.yaml
   - target:
       kind: Deployment
-      name: n8n-worker
-    path: patch-task-runner-image.yaml
+      name: n8n-worker|n8n
+    patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: n8n-deployment
+      spec:
+        template:
+          spec:
+            containers:
+            - name: n8n-task-runners
+              image: n8nio/runners:2.8.3
+              args: [python, javascript]
