@@ -15,7 +15,4 @@ patches:
   - target:
       kind: Deployment
       name: n8n-worker
-    patch: |-
-      - op: replace
-        path: /spec/template/spec/containers/[name=n8n-task-runners]/image
-        value: n8nio/runners:2.8.3
+    path: patch-task-runner-image.yaml
