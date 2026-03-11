@@ -6,6 +6,7 @@ resources:
   - postgres-configuration.yml
   - n8n-encryption-key.yml
   - n8n-license-activation-key.yml
+  - n8n-task-runners-secret.yml
 
 patches:
   - target:
