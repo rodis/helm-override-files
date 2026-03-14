@@ -25,5 +25,5 @@ patches:
           spec:
             containers:
             - name: n8n-task-runners
-              image: n8nio/runners:2.8.3
+              image: n8nio/runners:2.11.4
               args: [python, javascript]
