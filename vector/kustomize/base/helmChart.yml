@@ -4,6 +4,6 @@ metadata:
   name: vector
 name: vector
 releaseName: vector
-repo: oci://ghcr.io/vectordotdev/helm-charts/vector
+repo: https://helm.vector.dev
 valuesFile: values.yml
 namespace: vector
