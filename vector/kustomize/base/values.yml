@@ -12,6 +12,8 @@ ingress:
       paths:
         - path: /
           pathType: Prefix
+          port:
+            number: 80
   tls:
     - secretName: vector-tls
       hosts:
