@@ -1,0 +1,18 @@
+role: "Stateless-Aggregator"
+replicas: 3
+serviceHeadless:
+  enabled: false
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  hosts:
+    - host: --placeholder--
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: vector-tls
+      hosts:
+        - --placeholder--
