@@ -19,8 +19,21 @@ ingress:
       hosts:
         - --placeholder--
 
-existingConfigMaps:
-  - vector-sources
-  - vector-sinks
+extraVolumes:
+  - name: vector-sources
+    configMap:
+      name: vector-sources
+  - name: vector-transforms
+    configMap:
+      name: vector-transforms
+  - name: vector-sinks
+    configMap:
+      name: vector-sinks
 
-dataDir: "/vector/data"
+extraVolumeMounts:
+  - name: vector-sources
+    mountPath: /vector/sources
+  - name: vector-transforms
+    mountPath: /vector/transforms
+  - name: vector-sinks
+    mountPath: /vector/sinks
