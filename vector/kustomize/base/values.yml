@@ -23,9 +23,6 @@ extraVolumes:
   - name: vector-sources
     configMap:
       name: vector-sources
-  - name: vector-transforms
-    configMap:
-      name: vector-transforms
   - name: vector-sinks
     configMap:
       name: vector-sinks
@@ -33,7 +30,5 @@ extraVolumes:
 extraVolumeMounts:
   - name: vector-sources
     mountPath: /vector/sources
-  - name: vector-transforms
-    mountPath: /vector/transforms
   - name: vector-sinks
     mountPath: /vector/sinks
