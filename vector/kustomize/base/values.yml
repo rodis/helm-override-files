@@ -1,5 +1,5 @@
 role: "Stateless-Aggregator"
-replicas: 3
+replicas: 1
 serviceHeadless:
   enabled: false
 ingress:
@@ -18,3 +18,9 @@ ingress:
     - secretName: vector-tls
       hosts:
         - --placeholder--
+
+existingConfigMaps:
+  - vector-sources
+  - vector-sinks
+
+dataDir: "/vector/data"

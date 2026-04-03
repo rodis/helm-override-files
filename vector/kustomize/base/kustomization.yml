@@ -38,5 +38,19 @@
 generators:
   - helmChart.yml
 
+configMapGenerator:
+  - name: vector-sources
+    namespace: vector
+    files:
+      - ./configs/sources/http_server_data_in.yml
+    options:
+      disableNameSuffixHash: true
+  - name: vector-sinks
+    namespace: vector
+    files:
+      - ./configs/sinks/console.yml
+    options:
+      disableNameSuffixHash: true
+
 resources:
   - namespace.yml
