@@ -19,6 +19,18 @@ ingress:
       hosts:
         - --placeholder--
 
+service:
+  ports:
+    - name: http-server
+      port: 80
+      protocol: TCP
+containerPorts:
+  - containerPort: 80
+    name: http-server
+    protocol: TCP
+    
+logLevel: "debug"
+
 extraVolumes:
   - name: vector-sources
     configMap:
@@ -32,3 +44,10 @@ extraVolumeMounts:
     mountPath: /vector/sources
   - name: vector-sinks
     mountPath: /vector/sinks
+  
+args:
+  - --config-dir
+  - "/vector/"
+
+image:
+  base: "debian"
