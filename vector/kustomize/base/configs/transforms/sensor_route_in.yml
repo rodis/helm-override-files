@@ -4,4 +4,4 @@ inputs:
 route:
   car_lock_state_change:
     type: vrl
-    source: .subpath == "car_lock_state_change"
+    source: .sensor == "car_lock_state_change"
