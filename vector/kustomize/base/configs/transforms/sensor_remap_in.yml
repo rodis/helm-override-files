@@ -1,0 +1,6 @@
+type: remap
+inputs:
+  - http_server_data_in_route.sensor
+source: |-
+  .sensor =  split!(.path, "/", limit:4)[2]
+  .topic = .sensor

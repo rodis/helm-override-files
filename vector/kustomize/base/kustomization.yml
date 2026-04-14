@@ -16,6 +16,15 @@ configMapGenerator:
       - ./configs/sources/http_server_data_in.yml
     options:
       disableNameSuffixHash: true
+  - name: vector-transforms
+    namespace: vector
+    files:
+      - ./configs/transforms/http_server_data_in_remap.yml
+      - ./configs/transforms/http_server_data_in_route.yml
+      - ./configs/transforms/sensor_remap_in.yml
+      - ./configs/transforms/sensor_route_in.yml
+    options:
+      disableNameSuffixHash: true
   - name: vector-sinks
     namespace: vector
     files:

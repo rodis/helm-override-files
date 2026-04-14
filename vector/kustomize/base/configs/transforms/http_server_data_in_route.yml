@@ -4,4 +4,7 @@ inputs:
 route:
   transactions:
     type: vrl
-    source: .subpath == "transactions"
+    source: .subpath == "transaction"
+  sensor:
+    type: vrl
+    source: .subpath == "sensor"

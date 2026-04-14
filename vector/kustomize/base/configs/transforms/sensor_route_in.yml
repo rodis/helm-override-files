@@ -1,0 +1,7 @@
+type: route
+inputs:
+  - sensor_remap_in
+route:
+  car_lock_state_change:
+    type: vrl
+    source: .subpath == "car_lock_state_change"
