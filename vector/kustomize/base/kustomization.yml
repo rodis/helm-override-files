@@ -29,6 +29,7 @@ configMapGenerator:
     namespace: vector
     files:
       - ./configs/sinks/console.yml
+      - ./configs/sinks/sensor_to_kafka.yml
     options:
       disableNameSuffixHash: true
 
