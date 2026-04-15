@@ -1,8 +1,6 @@
 type: kafka
 inputs:
-  - transactions_route_in.cc
-  - transactions_route_in.car
-  - transactions_route_in.test
+  - sensor_route_in.car_lock_state_change
 acknowledgements:
   enabled: true
 librdkafka_options:

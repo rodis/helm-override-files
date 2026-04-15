@@ -49,6 +49,10 @@ extraVolumeMounts:
     mountPath: /vector/transforms
   - name: vector-sinks
     mountPath: /vector/sinks
+
+envFrom:
+  - secretRef:
+      name: kafka-credentials-for-vector
   
 args:
   - --config-dir
