@@ -5,3 +5,6 @@ route:
   car_lock_state_change:
     type: vrl
     source: .sensor == "car_lock_state_change"
+  connect_to_home_wifi:
+    type: vrl
+    source: .sensor == "connect_to_home_wifi"

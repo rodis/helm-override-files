@@ -1,6 +1,7 @@
 type: kafka
 inputs:
   - sensor_route_in.car_lock_state_change
+  - sensor_route_in.connect_to_home_wifi
 acknowledgements:
   enabled: true
 librdkafka_options:
