@@ -1,6 +1,6 @@
 type: console
 inputs:
-  - classify_domain
+  - enrich_sensor
 encoding:
   codec: json
   json:

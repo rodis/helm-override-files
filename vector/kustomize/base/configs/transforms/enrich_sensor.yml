@@ -3,12 +3,11 @@ inputs:
   - route_by_domain.sensor_traffic
 source: |
   # Extract specific sensor metadata from path
-  # Index 0 is empty, 1 is 'sensor', 2 is source, 3 is event
+  # Index 0 is 'sensor', 1 is source, 2 is event
   
   # Correctly providing fallbacks for missing path segments
-  .source_app = get(.path_parts, [2]) ?? "unknown_app"
-  .event_name = get(.path_parts, [3]) ?? "unknown_event"
+  .source_app = get(.path_parts, [1]) ?? "unknown_app"
+  .event_name = get(.path_parts, [2]) ?? "unknown_event"
 
   # Cleanup internal routing fields before Kafka
   del(.path)
-  del(.event_domain)

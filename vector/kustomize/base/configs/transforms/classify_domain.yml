@@ -2,30 +2,25 @@ type: remap
 inputs:
   - http_server_data_in
 source: |
-  # 1. Hard validation: Require timestamp from iOS
-  if !exists(.timestamp) { 
-      log("Missing timestamp. Dropping.", level: "error")
-      abort 
+  # 1. Path Parsing (Cleaned up from our previous step)
+  path_str = to_string!(.path)
+  clean_path = strip_whitespace(path_str)
+  if length(clean_path) > 1 {
+      # Remove leading slash and split
+      .path_parts = split(slice!(clean_path, 1), "/")
   }
-  .timestamp = to_int!(.timestamp)
+  .event_domain = get(.path_parts, [0]) ?? "unknown"
 
-  # 2. Path separation
-  # Ensure it's a string, trim it, and remove the leading slash
-  raw_path = to_string!(.path)
-  clean_path = strip_whitespace(raw_path)
-  clean_path = slice!(clean_path, 1) # Removes the first character (the '/')
+  # 2. Payload to Message Swap
+  # If iOS sends {"payload": {"name": "...", "timestamp": ...}}
+  if exists(.payload) {
+      .message = del(.payload) 
+  } 
 
-  # Split without a limit to get everything
-  .path_parts = split(clean_path, "/")
-
-  # Now, let's verify index 0
-  .event_domain = get(.path_parts, [0]) ?? "unknown_domain"
-
-  # 3. Mes  sage standardization
-  # If the   body is JSON, parse it into an object. 
-  # If emp  ty/null, make it an empty object.
-  if .message == null {
+  # 3. Fallback: If there was no payload but a raw body exists
+  if .message == null || .message == "" {
       .message = {}
   } else {
+      # Ensure it is parsed JSON if it came in as a string
       .message = parse_json(.message) ?? .message
   }
