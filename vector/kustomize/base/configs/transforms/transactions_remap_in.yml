@@ -1,6 +1,6 @@
 type: remap
 inputs:
-  - http_server_data_in_route.transactions
+  - route_by_domain.transactions_traffic
 source: |-
   .subpath =  split!(.path, "/", limit:4)[2]
   .topic = .subpath

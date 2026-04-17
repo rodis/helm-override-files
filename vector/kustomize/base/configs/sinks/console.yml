@@ -1,6 +1,6 @@
 type: console
 inputs:
-  - sensor_route_in.car_lock_state_change
+  - enrich_sensor
 encoding:
   codec: json
   json:

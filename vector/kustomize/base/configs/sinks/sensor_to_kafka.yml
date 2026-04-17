@@ -1,13 +1,12 @@
 type: kafka
 inputs:
-  - sensor_route_in.car_lock_state_change
-  - sensor_route_in.connect_to_home_wifi
+  - enrich_sensor
 acknowledgements:
   enabled: true
 librdkafka_options:
   allow.auto.create.topics: "false"
 bootstrap_servers: "kafka-controller-0.kafka-controller-headless.kafka.svc.cluster.local:9092,kafka-controller-1.kafka-controller-headless.kafka.svc.cluster.local:9092,kafka-controller-2.kafka-controller-headless.kafka.svc.cluster.local:9092"
-topic: "{{topic}}"
+topic: raw_sensors
 encoding:
   codec: json
 sasl:
