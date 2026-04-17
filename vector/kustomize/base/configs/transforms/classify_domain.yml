@@ -1,25 +1,24 @@
-classify_domain:
-  type: remap
-  inputs:
-    - http_server_data_in
-  source: |
-    # 1. Hard validation: Require timestamp from iOS
-    if !exists(.timestamp) { 
-        log("Missing timestamp. Dropping.", level: "error")
-        abort 
-    }
-    .timestamp = to_int!(.timestamp)
+type: remap
+inputs:
+  - http_server_data_in
+source: |
+  # 1. Hard validation: Require timestamp from iOS
+  if !exists(.timestamp) { 
+      log("Missing timestamp. Dropping.", level: "error")
+      abort 
+  }
+  .timestamp = to_int!(.timestamp)
 
-    # 2. Path separation
-    # Path: /sensor/shortcut/event_name
-    path_parts = split(strip_whitespace!(.path), "/", limit: 2)
-    .event_domain = path_parts[1] ?? "unknown_domain"
+  # 2. Path separation
+  # Path: /sensor/shortcut/event_name
+  path_parts = split(strip_whitespace!(.path), "/", limit: 2)
+  .event_domain = path_parts[1] ?? "unknown_domain"
 
-    # 3. Message standardization
-    # If the body is JSON, parse it into an object. 
-    # If empty/null, make it an empty object.
-    if .message == null {
-        .message = {}
-    } else {
-        .message = parse_json(.message) ?? .message
-    }
+  # 3. Message standardization
+  # If the body is JSON, parse it into an object. 
+  # If empty/null, make it an empty object.
+  if .message == null {
+      .message = {}
+  } else {
+      .message = parse_json(.message) ?? .message
+  }

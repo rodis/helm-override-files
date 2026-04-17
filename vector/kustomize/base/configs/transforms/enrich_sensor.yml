@@ -1,15 +1,14 @@
-enrich_sensor:
-  type: remap
-  inputs:
-    - route_by_domain.sensor_traffic
-  source: |
-    # Extract specific sensor metadata from path
-    # Index 0 is empty, 1 is 'sensor', 2 is source, 3 is event
-    path_parts = split(strip_whitespace!(.path), "/", limit: 4)
-    
-    .source_app = path_parts[2] ?? "unknown_app"
-    .event_name = path_parts[3] ?? "unknown_event"
+type: remap
+inputs:
+  - route_by_domain.sensor_traffic
+source: |
+  # Extract specific sensor metadata from path
+  # Index 0 is empty, 1 is 'sensor', 2 is source, 3 is event
+  path_parts = split(strip_whitespace!(.path), "/", limit: 4)
+  
+  .source_app = path_parts[2] ?? "unknown_app"
+  .event_name = path_parts[3] ?? "unknown_event"
 
-    # Cleanup internal routing fields before Kafka
-    del(.path)
-    del(.event_domain)
+  # Cleanup internal routing fields before Kafka
+  del(.path)
+  del(.event_domain)

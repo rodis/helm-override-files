@@ -1,7 +1,6 @@
-route_by_domain:
-  type: route
-  inputs:
-    - classify_domain
-  route:
-    sensor_traffic: .event_domain == "sensor"
-    transaction_traffic: .event_domain == "transaction"
+type: route
+inputs:
+  - classify_domain
+route:
+  sensor_traffic: .event_domain == "sensor"
+  transaction_traffic: .event_domain == "transaction"
