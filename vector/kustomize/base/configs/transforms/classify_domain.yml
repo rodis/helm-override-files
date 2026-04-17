@@ -10,15 +10,19 @@ source: |
   .timestamp = to_int!(.timestamp)
 
   # 2. Path separation
-  # Remove leading and trailing slashes so " /sensor/shortcut/ " becomes "sensor/shortcut"
-  clean_path = strip_whitespace!(.path)
-  clean_path = replace(clean_path, r'^/+', "") 
+  # Ensure it's a string, trim it, and remove the leading slash
+  raw_path = to_string!(.path)
+  clean_path = strip_whitespace(raw_path)
+  clean_path = slice!(clean_path, 1) # Removes the first character (the '/')
 
-  # Split the cleaned path
-  .path_parts = split(clean_path, "/", limit: 0)
+  # Split without a limit to get everything
+  .path_parts = split(clean_path, "/")
 
-  # Now index 0 is 'sensor', index 1 is 'shortcut', etc.
+  # Now, let's verify index 0
   .event_domain = get(.path_parts, [0]) ?? "unknown_domain"
+
+  .debug_path_len = length(to_string(.path))
+  .debug_raw_path = .path
 
   # 3. Mes  sage standardization
   # If the   body is JSON, parse it into an object. 
