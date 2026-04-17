@@ -10,11 +10,16 @@ source: |
   .timestamp = to_int!(.timestamp)
 
   # 2. Path separation
-  # Path: /sensor/shortcut/event_name
-  .path_parts = split(strip_whitespace!(.path), "/", limit: 0)
-  # Use .get() which returns null if out of bounds, then ?? handles the null
-  .event_domain = get(.path_parts, [1]) ?? "unknown_domain"
-            
+  # Remove leading and trailing slashes so " /sensor/shortcut/ " becomes "sensor/shortcut"
+  clean_path = strip_whitespace!(.path)
+  clean_path = replace(clean_path, r'^/+', "") 
+
+  # Split the cleaned path
+  .path_parts = split(clean_path, "/", limit: 0)
+
+  # Now index 0 is 'sensor', index 1 is 'shortcut', etc.
+  .event_domain = get(.path_parts, [0]) ?? "unknown_domain"
+
   # 3. Mes  sage standardization
   # If the   body is JSON, parse it into an object. 
   # If emp  ty/null, make it an empty object.
