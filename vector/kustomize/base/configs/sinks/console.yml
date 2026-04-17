@@ -1,6 +1,6 @@
 type: console
 inputs:
-  - http_server_data_in
+  - classify_domain
 encoding:
   codec: json
   json:
