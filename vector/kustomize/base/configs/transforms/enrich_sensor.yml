@@ -6,8 +6,9 @@ source: |
   # Index 0 is empty, 1 is 'sensor', 2 is source, 3 is event
   path_parts = split(strip_whitespace!(.path), "/", limit: 4)
   
-  .source_app = path_parts[2] ?? "unknown_app"
-  .event_name = path_parts[3] ?? "unknown_event"
+  # Correctly providing fallbacks for missing path segments
+  .source_app = get(path_parts, [2]) ?? "unknown_app"
+  .event_name = get(path_parts, [3]) ?? "unknown_event"
 
   # Cleanup internal routing fields before Kafka
   del(.path)

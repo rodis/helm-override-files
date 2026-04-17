@@ -12,11 +12,12 @@ source: |
   # 2. Path separation
   # Path: /sensor/shortcut/event_name
   path_parts = split(strip_whitespace!(.path), "/", limit: 2)
-  .event_domain = path_parts[1] ?? "unknown_domain"
-
-  # 3. Message standardization
-  # If the body is JSON, parse it into an object. 
-  # If empty/null, make it an empty object.
+  # Use .get() which returns null if out of bounds, then ?? handles the null
+  .event_domain = get(path_parts, [1]) ?? "unknown_domain"
+            
+  # 3. Mes  sage standardization
+  # If the   body is JSON, parse it into an object. 
+  # If emp  ty/null, make it an empty object.
   if .message == null {
       .message = {}
   } else {
