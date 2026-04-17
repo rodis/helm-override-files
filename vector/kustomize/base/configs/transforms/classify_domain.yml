@@ -11,9 +11,9 @@ source: |
 
   # 2. Path separation
   # Path: /sensor/shortcut/event_name
-  path_parts = split(strip_whitespace!(.path), "/", limit: 2)
+  .path_parts = split(strip_whitespace!(.path), "/", limit: 0)
   # Use .get() which returns null if out of bounds, then ?? handles the null
-  .event_domain = get(path_parts, [1]) ?? "unknown_domain"
+  .event_domain = get(.path_parts, [1]) ?? "unknown_domain"
             
   # 3. Mes  sage standardization
   # If the   body is JSON, parse it into an object. 
