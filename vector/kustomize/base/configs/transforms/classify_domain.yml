@@ -21,9 +21,6 @@ source: |
   # Now, let's verify index 0
   .event_domain = get(.path_parts, [0]) ?? "unknown_domain"
 
-  .debug_path_len = length(to_string(.path))
-  .debug_raw_path = .path
-
   # 3. Mes  sage standardization
   # If the   body is JSON, parse it into an object. 
   # If emp  ty/null, make it an empty object.
