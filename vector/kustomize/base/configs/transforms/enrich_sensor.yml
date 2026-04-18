@@ -2,22 +2,7 @@ type: remap
 inputs:
   - route_by_domain.sensor_traffic
 source: |
-  # 1. Extract from path parts
-  .source_app = get(.path_parts, [1]) ?? "unknown_app"
-  event_name_val = get(.path_parts, [2]) ?? "unknown_event"
-
-  # 2. Put it in the root for Kafka routing/filtering
-  .event_name = event_name_val
-
-  # 3. Inject it into the message for easy DB storage
-  # This ensures .message is an object and adds the key
-  if is_object(.message) {
-      .message.event_name = event_name_val
-  } else {
-      # If message was somehow a string, convert it to a map
-      .message = {"data": .message, "event_name": event_name_val}
-  }
-
-  # 4. Final Cleanup
+  # Cleanup
   del(.path_parts)
   del(.path)
+  del(.event_domain)
