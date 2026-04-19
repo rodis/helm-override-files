@@ -27,3 +27,4 @@ configMapGenerator:
 resources:
   - namespace.yml
   - kafka-credentials-for-vector.yml
+  - kafka-aiven-credentials-for-vector.yml

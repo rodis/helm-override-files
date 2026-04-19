@@ -41,6 +41,9 @@ extraVolumes:
   - name: vector-sinks
     configMap:
       name: vector-sinks
+  - name: kafka-aiven-credentials
+    secret:
+      secretName: kafka-aiven-credentials-for-vector
 
 extraVolumeMounts:
   - name: vector-sources
@@ -49,6 +52,9 @@ extraVolumeMounts:
     mountPath: /vector/transforms
   - name: vector-sinks
     mountPath: /vector/sinks
+  - name: kafka-aiven-credentials
+    mountPath: "/etc/vector/certs"
+    readOnly: true
 
 envFrom:
   - secretRef:
