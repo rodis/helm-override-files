@@ -10,11 +10,7 @@ tls:
   ca_file: "/etc/vector/certs/ca_certificate"
   crt_file: "/etc/vector/certs/access_certificate"
   key_file: "/etc/vector/certs/access_key"
-  # Aiven usually expects the key to be in a specific format. 
-  # If you get an 'invalid private key' error, you may need to 
-  # verify if it's PKCS#1 or PKCS#8.
 
-# Reliability settings for production
 buffer:
   type: disk
   max_size: 268435488 # 256MB buffer if Kafka is temporarily unreachable
