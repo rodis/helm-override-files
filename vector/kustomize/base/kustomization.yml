@@ -20,7 +20,7 @@ configMapGenerator:
     namespace: vector
     files:
       - ./configs/sinks/console.yml
-      - ./configs/sinks/sensor_to_kafka.yml
+      - ./configs/sinks/sensor_to_kafka_aiven.yml
     options:
       disableNameSuffixHash: true
 
