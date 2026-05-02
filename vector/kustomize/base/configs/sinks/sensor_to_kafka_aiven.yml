@@ -13,6 +13,9 @@ tls:
   crt_file: "/etc/vector/certs/access_certificate"
   key_file: "/etc/vector/certs/access_key"
 
+healthcheck:
+  enabled: false
+
 buffer:
   type: disk
   max_size: 268435488 # 256MB buffer if Kafka is temporarily unreachable
