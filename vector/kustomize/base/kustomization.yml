@@ -6,29 +6,21 @@ configMapGenerator:
     namespace: vector
     files:
       - ./configs/vector.yaml
-    options:
-      disableNameSuffixHash: true
   - name: vector-sources
     namespace: vector
     files:
       - ./configs/sources/http_server_data_in.yml
-    options:
-      disableNameSuffixHash: true
   - name: vector-transforms
     namespace: vector
     files:
       - ./configs/transforms/classify_domain.yml
       - ./configs/transforms/route_by_domain.yml
       - ./configs/transforms/enrich_sensor.yml
-    options:
-      disableNameSuffixHash: true
   - name: vector-sinks
     namespace: vector
     files:
       - ./configs/sinks/console.yml
       - ./configs/sinks/sensor_to_kafka_aiven.yml
-    options:
-      disableNameSuffixHash: true
 
 resources:
   - namespace.yml
