@@ -32,6 +32,9 @@ containerPorts:
 logLevel: "debug"
 
 extraVolumes:
+  - name: vector-config
+    configMap:
+      name: vector-config
   - name: vector-sources
     configMap:
       name: vector-sources
@@ -46,6 +49,9 @@ extraVolumes:
       secretName: kafka-aiven-credentials-for-vector
 
 extraVolumeMounts:
+  - name: vector-config
+    mountPath: /vector/vector.yaml
+    subPath: vector.yaml
   - name: vector-sources
     mountPath: /vector/sources
   - name: vector-transforms

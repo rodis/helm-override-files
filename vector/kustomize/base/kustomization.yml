@@ -2,6 +2,12 @@ generators:
   - helmChart.yml
 
 configMapGenerator:
+  - name: vector-config
+    namespace: vector
+    files:
+      - ./configs/vector.yaml
+    options:
+      disableNameSuffixHash: true
   - name: vector-sources
     namespace: vector
     files:
