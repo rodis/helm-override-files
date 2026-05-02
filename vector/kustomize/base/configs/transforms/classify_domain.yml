@@ -31,19 +31,28 @@ source: |
   .event_domain = domain
   .source_app = app
 
-  # 3. Payload to Message Swap
-  if exists(.payload) {
-      .message = del(.payload) 
-  } 
+  # 3. Kafka Topic — optional 3rd path segment, defaults to raw_{domain}s
+  topic = get(.path_parts, [2]) ?? null
 
-  # 4. Message Standardization
+  if topic == null || topic == "" {
+      .kafka_topic = "raw_" + domain
+  } else {
+      .kafka_topic = topic
+  }
+
+  # 4. Payload to Message Swap
+  if exists(.payload) {
+      .message = del(.payload)
+  }
+
+  # 5. Message Standardization
   if .message == null || .message == "" {
       .message = {}
   } else {
       .message = parse_json(.message) ?? .message
   }
 
-  # 5. Strict Event Name Validation
+  # 6. Strict Event Name Validation
   if !is_object(.message) || !exists(.message.event_name) {
       log("Rejected: Missing event_name in payload from app: " + to_string(.source_app) ?? "unknown", level: "error")
       abort

@@ -2,9 +2,11 @@ type: kafka
 inputs:
   - enrich_sensor
 bootstrap_servers: "kafka-13776261-aware.l.aivencloud.com:19583"
-topic: "raw_sensors"
+topic: "{{ kafka_topic }}"
 encoding:
   codec: json
+  except_fields:
+    - kafka_topic
 tls:
   enabled: true
   ca_file: "/etc/vector/certs/ca_certificate"

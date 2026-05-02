@@ -1,7 +1,0 @@
-type: remap
-inputs:
-  - route_by_domain.transactions_traffic
-source: |-
-  .subpath =  split!(.path, "/", limit:4)[2]
-  .topic = .subpath
-  .message.timestamp = .timestamp
