@@ -35,7 +35,7 @@ source: |
   topic = get(.path_parts, [2]) ?? null
 
   if topic == null || topic == "" {
-      .kafka_topic = "raw_" + domain
+      .kafka_topic = "raw_" + to_string!(domain)
   } else {
       .kafka_topic = topic
   }
