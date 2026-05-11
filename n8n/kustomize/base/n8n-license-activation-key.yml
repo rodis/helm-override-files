@@ -7,7 +7,7 @@ spec:
   tokenSecret:
     name: doppler-token-secret
     namespace: doppler-operator-system
-  prokect: n8n-runners-auth-token
+  project: n8n-runners-auth-token
   config: prd
   secrets:
     - N8N_LICENSE_ACTIVATION_KEY
