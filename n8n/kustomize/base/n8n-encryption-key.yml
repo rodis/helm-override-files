@@ -7,8 +7,10 @@ spec:
   tokenSecret:
     name: doppler-token-secret
     namespace: doppler-operator-system
-  project: n8n-encryption-key
+  project: n8n-runners-auth-token
   config: prd
+  secrets:
+    - N8N_ENCRYPTION_KEY
   managedSecret:
     name: n8n-encryption-key
     namespace: n8n
