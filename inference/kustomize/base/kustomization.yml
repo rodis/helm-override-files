@@ -1,0 +1,6 @@
+resources:
+  - namespace.yml
+  - inference-worker-config.yml
+  - kafka-ssl-credentials.yml
+  - redis-credentials.yml
+  - home-arrival

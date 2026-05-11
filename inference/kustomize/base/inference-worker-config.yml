@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: inference-worker-config
+  namespace: inference
+data:
+  KAFKA_BOOTSTRAP_SERVERS: "kafka-13776261-aware.l.aivencloud.com:19583"
+  REDIS_HOST: "valkey-36a9017f-aware.i.aivencloud.com"
+  REDIS_PORT: "19582"
+  REDIS_DB: "0"
+  REDIS_USERNAME: "default"
+  VECTOR_BASE_URL: "https://vector.prod.rods.me"
