@@ -1,61 +1,66 @@
 deployment:
+  # TEMPORARY: busybox for inspecting ConfigMap/Secret mounts before the real image exists.
+  # Exec in with: kubectl exec -it -n inference deploy/home-arrival -- sh
+  # Then: env | sort  and  ls -la /etc/kafka/ssl
   image:
-    repository: ghcr.io/rods/inference-home-arrival
+    repository: busybox
     tag: "latest"
     pullPolicy: IfNotPresent
+  command: ["sh", "-c"]
+  args: ["sleep infinity"]
 
-  env:
-    KAFKA_BOOTSTRAP_SERVERS:
-      valueFrom:
-        configMapKeyRef:
-          name: inference-worker-config
-          key: KAFKA_BOOTSTRAP_SERVERS
-    REDIS_HOST:
-      valueFrom:
-        configMapKeyRef:
-          name: inference-worker-config
-          key: REDIS_HOST
-    REDIS_PORT:
-      valueFrom:
-        configMapKeyRef:
-          name: inference-worker-config
-          key: REDIS_PORT
-    REDIS_DB:
-      valueFrom:
-        configMapKeyRef:
-          name: inference-worker-config
-          key: REDIS_DB
-    REDIS_USERNAME:
-      valueFrom:
-        configMapKeyRef:
-          name: inference-worker-config
-          key: REDIS_USERNAME
-    VECTOR_BASE_URL:
-      valueFrom:
-        configMapKeyRef:
-          name: inference-worker-config
-          key: VECTOR_BASE_URL
-    REDIS_PASSWORD:
-      valueFrom:
-        secretKeyRef:
-          name: redis-credentials
-          key: REDIS_PASSWORD
-
-  volumes:
-    kafka-ssl:
-      secret:
-        secretName: kafka-ssl-credentials
-        items:
-          - key: ca-pem
-            path: ca.pem
-          - key: access-cert-pem
-            path: access.pem
-          - key: access-key-pem
-            path: access-key.pem
-
-  volumeMounts:
-    kafka-ssl:
-      mountPath: /etc/kafka/ssl
+#  env:
+#    KAFKA_BOOTSTRAP_SERVERS:
+#      valueFrom:
+#        configMapKeyRef:
+#          name: inference-worker-config
+#          key: KAFKA_BOOTSTRAP_SERVERS
+#    REDIS_HOST:
+#      valueFrom:
+#        configMapKeyRef:
+#          name: inference-worker-config
+#          key: REDIS_HOST
+#    REDIS_PORT:
+#      valueFrom:
+#        configMapKeyRef:
+#          name: inference-worker-config
+#          key: REDIS_PORT
+#    REDIS_DB:
+#      valueFrom:
+#        configMapKeyRef:
+#          name: inference-worker-config
+#          key: REDIS_DB
+#    REDIS_USERNAME:
+#      valueFrom:
+#        configMapKeyRef:
+#          name: inference-worker-config
+#          key: REDIS_USERNAME
+#    VECTOR_BASE_URL:
+#      valueFrom:
+#        configMapKeyRef:
+#          name: inference-worker-config
+#          key: VECTOR_BASE_URL
+#    REDIS_PASSWORD:
+#      valueFrom:
+#        secretKeyRef:
+#          name: redis-credentials
+#          key: REDIS_PASSWORD
+#
+#  volumes:
+#    kafka-ssl:
+#      secret:
+#        secretName: kafka-ssl-credentials
+#        items:
+#          - key: ca-pem
+#            path: ca.pem
+#          - key: access-cert-pem
+#            path: access.pem
+#          - key: access-key-pem
+#            path: access-key.pem
+#
+#  volumeMounts:
+#    kafka-ssl:
+#      mountPath: /etc/kafka/ssl
 
   resources:
     requests:
