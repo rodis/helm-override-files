@@ -1,6 +1,6 @@
 deployment:
   image:
-    repository: ghcr.io/rods/inference-home-arrival
+    repository: ghcr.io/rodis/inference-home-arrival
     tag: "latest"
     pullPolicy: IfNotPresent
 
