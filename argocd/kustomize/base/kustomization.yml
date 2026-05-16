@@ -1,0 +1,5 @@
+namespace: argocd
+generators:
+  - helmChart.yml
+resources:
+  - namespace.yml
