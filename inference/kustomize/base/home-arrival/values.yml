@@ -1,19 +1,8 @@
 deployment:
-  # TEMPORARY: busybox for inspecting ConfigMap/Secret mounts before the real image exists.
-  # Exec in with: kubectl exec -it -n inference deploy/home-arrival -- sh
-  # Then: env | sort  and  ls -la /etc/kafka/ssl
   image:
-    repository: busybox
+    repository: ghcr.io/rods/inference-home-arrival
     tag: "latest"
     pullPolicy: IfNotPresent
-  command: ["sh", "-c"]
-  args: ["sleep infinity"]
-
-  # TEMPORARY: override chart defaults (runAsNonRoot=true, readOnlyRootFilesystem=true)
-  # so the busybox debug image (which runs as root) can start.
-  containerSecurityContext:
-    runAsNonRoot: false
-    readOnlyRootFilesystem: false
 
   env:
     KAFKA_BOOTSTRAP_SERVERS:
@@ -21,6 +10,11 @@ deployment:
         configMapKeyRef:
           name: inference-worker-config
           key: KAFKA_BOOTSTRAP_SERVERS
+    VECTOR_BASE_URL:
+      valueFrom:
+        configMapKeyRef:
+          name: inference-worker-config
+          key: VECTOR_BASE_URL
     REDIS_HOST:
       valueFrom:
         secretKeyRef:
@@ -46,11 +40,6 @@ deployment:
         secretKeyRef:
           name: redis-credentials
           key: REDIS_PASSWORD
-    VECTOR_BASE_URL:
-      valueFrom:
-        configMapKeyRef:
-          name: inference-worker-config
-          key: VECTOR_BASE_URL
 
   volumes:
     kafka-ssl:
