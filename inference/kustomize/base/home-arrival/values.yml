@@ -46,21 +46,21 @@ deployment:
 #          name: redis-credentials
 #          key: REDIS_PASSWORD
 #
-#  volumes:
-#    kafka-ssl:
-#      secret:
-#        secretName: kafka-ssl-credentials
-#        items:
-#          - key: ca-pem
-#            path: ca.pem
-#          - key: access-cert-pem
-#            path: access.pem
-#          - key: access-key-pem
-#            path: access-key.pem
-#
-#  volumeMounts:
-#    kafka-ssl:
-#      mountPath: /etc/kafka/ssl
+  volumes:
+    kafka-ssl:
+      secret:
+        secretName: kafka-ssl-credentials
+        items:
+          - key: ca-certificate
+            path: ca-cert.pem
+          - key: access-certificate
+            path: access-cert.pem
+          - key: access-key
+            path: access-key.pem
+
+  volumeMounts:
+    kafka-ssl:
+      mountPath: /etc/kafka/ssl
 
   resources:
     requests:
