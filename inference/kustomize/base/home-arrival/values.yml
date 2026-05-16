@@ -2,7 +2,7 @@ deployment:
   image:
     repository: ghcr.io/rodis/inference-home-arrival
     tag: "latest"
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
 
   env:
     KAFKA_BOOTSTRAP_SERVERS:
