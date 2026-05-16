@@ -15,43 +15,43 @@ deployment:
     runAsNonRoot: false
     readOnlyRootFilesystem: false
 
-#  env:
-#    KAFKA_BOOTSTRAP_SERVERS:
-#      valueFrom:
-#        configMapKeyRef:
-#          name: inference-worker-config
-#          key: KAFKA_BOOTSTRAP_SERVERS
-#    REDIS_HOST:
-#      valueFrom:
-#        configMapKeyRef:
-#          name: inference-worker-config
-#          key: REDIS_HOST
-#    REDIS_PORT:
-#      valueFrom:
-#        configMapKeyRef:
-#          name: inference-worker-config
-#          key: REDIS_PORT
-#    REDIS_DB:
-#      valueFrom:
-#        configMapKeyRef:
-#          name: inference-worker-config
-#          key: REDIS_DB
-#    REDIS_USERNAME:
-#      valueFrom:
-#        configMapKeyRef:
-#          name: inference-worker-config
-#          key: REDIS_USERNAME
-#    VECTOR_BASE_URL:
-#      valueFrom:
-#        configMapKeyRef:
-#          name: inference-worker-config
-#          key: VECTOR_BASE_URL
-#    REDIS_PASSWORD:
-#      valueFrom:
-#        secretKeyRef:
-#          name: redis-credentials
-#          key: REDIS_PASSWORD
-#
+  env:
+    KAFKA_BOOTSTRAP_SERVERS:
+      valueFrom:
+        configMapKeyRef:
+          name: inference-worker-config
+          key: KAFKA_BOOTSTRAP_SERVERS
+    REDIS_HOST:
+      valueFrom:
+        secretKeyRef:
+          name: redis-credentials
+          key: REDIS_HOST
+    REDIS_PORT:
+      valueFrom:
+        secretKeyRef:
+          name: redis-credentials
+          key: REDIS_PORT
+    REDIS_DB:
+      valueFrom:
+        secretKeyRef:
+          name: redis-credentials
+          key: REDIS_DB
+    REDIS_USERNAME:
+      valueFrom:
+        secretKeyRef:
+          name: redis-credentials
+          key: REDIS_USERNAME
+    REDIS_PASSWORD:
+      valueFrom:
+        secretKeyRef:
+          name: redis-credentials
+          key: REDIS_PASSWORD
+    VECTOR_BASE_URL:
+      valueFrom:
+        configMapKeyRef:
+          name: inference-worker-config
+          key: VECTOR_BASE_URL
+
   volumes:
     kafka-ssl:
       secret:
