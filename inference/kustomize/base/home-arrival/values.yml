@@ -9,6 +9,12 @@ deployment:
   command: ["sh", "-c"]
   args: ["sleep infinity"]
 
+  # TEMPORARY: override chart defaults (runAsNonRoot=true, readOnlyRootFilesystem=true)
+  # so the busybox debug image (which runs as root) can start.
+  containerSecurityContext:
+    runAsNonRoot: false
+    readOnlyRootFilesystem: false
+
 #  env:
 #    KAFKA_BOOTSTRAP_SERVERS:
 #      valueFrom:
