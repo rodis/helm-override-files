@@ -7,3 +7,10 @@
       kubernetes.core.k8s:
         state: present
         definition: "{{ lookup('kubernetes.core.kustomize', dir=playbook_dir + '/../kustomize/overlays/' + context, binary_path='/usr/bin/kustomize', enable_helm=True) }}"
+
+    # Image tags are :latest, so kustomize apply alone won't trigger a rollout
+    # when a new image is pushed. Force a restart on every deploy.
+    - name: Rollout restart all inference deployments
+      ansible.builtin.command:
+        cmd: kubectl rollout restart -n inference deployment
+      changed_when: true
