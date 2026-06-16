@@ -65,6 +65,8 @@ extraVolumeMounts:
 envFrom:
   - secretRef:
       name: kafka-credentials-for-vector
+  - secretRef:
+      name: neon-credentials-for-vector   # must exist before deploy; provides NEON_DATABASE_URL
   
 args:
   - --config-dir

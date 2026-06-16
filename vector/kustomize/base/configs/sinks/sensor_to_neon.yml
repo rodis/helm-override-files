@@ -1,0 +1,14 @@
+type: postgres
+inputs:
+  - shape_for_neon
+# Neon (Postgres) connection string, injected from a K8s secret via envFrom.
+# Use the pooled endpoint with sslmode=require.
+endpoint: "${NEON_DATABASE_URL}"
+table: events
+healthcheck:
+  enabled: true
+# Survive brief Neon unavailability (e.g. scale-to-zero cold start) without
+# dropping events — the Kafka consumer offset only advances on a successful write.
+buffer:
+  type: disk
+  max_size: 268435488 # 256MB

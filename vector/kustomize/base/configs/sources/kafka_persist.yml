@@ -1,0 +1,16 @@
+type: kafka
+bootstrap_servers: "kafka-13776261-aware.l.aivencloud.com:19583"
+group_id: "vector-neon-persister"
+topics:
+  - raw_sensors
+  - high_level_events
+# Start at the tail on first run (no committed offset) so we don't replay
+# pre-envelope_id history; on restart, resume from the committed group offset.
+auto_offset_reset: latest
+decoding:
+  codec: json
+tls:
+  enabled: true
+  ca_file: "/etc/vector/certs/ca_certificate"
+  crt_file: "/etc/vector/certs/access_certificate"
+  key_file: "/etc/vector/certs/access_key"

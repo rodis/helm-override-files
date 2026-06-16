@@ -1,0 +1,18 @@
+type: remap
+inputs:
+  - kafka_persist
+source: |
+  # Never persist an event without the stable id — it's the events PK.
+  if !exists(.envelope_id) {
+      abort
+  }
+
+  # event_class: the worker's inference output carries a top-level inference_type;
+  # raw producer events do not.
+  .event_class = "raw"
+  if exists(.inference_type) {
+      .event_class = "derived"
+  }
+
+  # occurred_at + ingested_at are set DB-side by the events BEFORE INSERT trigger,
+  # so this transform stays minimal (no timestamp math in VRL).

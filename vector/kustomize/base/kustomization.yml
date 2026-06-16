@@ -10,19 +10,23 @@ configMapGenerator:
     namespace: vector
     files:
       - ./configs/sources/http_server_data_in.yml
+      - ./configs/sources/kafka_persist.yml
   - name: vector-transforms
     namespace: vector
     files:
       - ./configs/transforms/classify_domain.yml
       - ./configs/transforms/route_by_domain.yml
       - ./configs/transforms/enrich_sensor.yml
+      - ./configs/transforms/shape_for_neon.yml
   - name: vector-sinks
     namespace: vector
     files:
       - ./configs/sinks/console.yml
       - ./configs/sinks/sensor_to_kafka_aiven.yml
+      - ./configs/sinks/sensor_to_neon.yml
 
 resources:
   - namespace.yml
   - kafka-credentials-for-vector.yml
   - kafka-aiven-credentials-for-vector.yml
+  - neon-credentials-for-vector.yml
