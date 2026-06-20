@@ -1,6 +1,0 @@
-type: http_server
-address: 0.0.0.0:80
-decoding:
-  codec: json
-path: ""
-strict_path: false

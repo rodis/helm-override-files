@@ -1,7 +1,0 @@
-type: console
-inputs:
-  - enrich_sensor
-encoding:
-  codec: json
-  json:
-    prettify: true

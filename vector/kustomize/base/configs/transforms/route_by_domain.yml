@@ -1,5 +1,0 @@
-type: route
-inputs:
-  - classify_domain
-route:
-  sensor_traffic: .event_domain == "sensors"

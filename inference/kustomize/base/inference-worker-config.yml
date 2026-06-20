@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: inference-worker-config
-  namespace: inference
-data:
-  KAFKA_BOOTSTRAP_SERVERS: "kafka-13776261-aware.l.aivencloud.com:19583"
-  VECTOR_BASE_URL: "https://vector.prod.rods.me"

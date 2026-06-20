@@ -1,9 +1,0 @@
-apiVersion: builtin
-kind: HelmChartInflationGenerator
-metadata:
-  name: vector
-name: vector
-releaseName: vector
-repo: https://helm.vector.dev
-valuesFile: values.yml
-namespace: vector
