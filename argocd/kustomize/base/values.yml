@@ -3,7 +3,17 @@ global:
 
 configs:
   cm:
-    kustomize.buildOptions: --enable-helm 
+    kustomize.buildOptions: --enable-helm
+    # Traefik runs as a hostPort DaemonSet with no Service, so it never writes
+    # status.loadBalancer to Ingress objects. ArgoCD's built-in Ingress health
+    # check requires that field, so every Ingress would otherwise sit at
+    # Progressing forever. Real health comes from the backing Service/Deployment,
+    # which ArgoCD assesses separately — so report Ingress as Healthy.
+    resource.customizations.health.networking.k8s.io_Ingress: |
+      hs = {}
+      hs.status = "Healthy"
+      hs.message = "Traefik hostPort DaemonSet: no LB status by design"
+      return hs
   params:
     server.insecure: true
 
