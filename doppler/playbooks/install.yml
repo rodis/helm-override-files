@@ -9,6 +9,12 @@
         state: directory
         suffix: doppler
       register: doppler_operator_dir
+      # Runner-local scratch, not the cluster. It must run in check mode or every later
+      # task that references its .path fails on an undefined variable and the whole plan
+      # dies before reaching anything that touches Kubernetes. The k8s tasks below are
+      # deliberately NOT marked, so in check mode they do a server-side dry run -- which is
+      # the actual plan.
+      check_mode: false
     - name: Compose path
       set_fact:
         doppler_operator_manifest_path: "{{ doppler_operator_dir.path }}/doppler-secrets-operator.yaml"
@@ -17,6 +23,7 @@
         url: https://github.com/DopplerHQ/kubernetes-operator/releases/latest/download/recommended.yaml
         dest: "{{ doppler_operator_manifest_path }}"
         mode: '0664'
+      check_mode: false   # runner-local scratch; see above
     - name: Apply doppler manifest to the cluster.
       kubernetes.core.k8s:
         state: present
