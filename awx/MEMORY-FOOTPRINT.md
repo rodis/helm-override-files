@@ -290,6 +290,45 @@ This stack **does** plan — `SPACELIFT_SKIP_PLANNING` is not in its environment
 `hosts: localhost`, so the plan is a real server-side dry run of the `kubernetes.core.k8s` tasks
 rather than a no-op against an unparsed inventory.
 
+## Outcome, measured 2026-09-02
+
+Applied via run `01M1HXKWT2YXXE7RM9PYPXSXFE` on commit `2cb6911`, FINISHED with delta `0/5/0`. The
+server-side dry run behind the confirm gate reported 17 resources, **16 unchanged** — operator CRDs,
+RBAC and Deployment all untouched — with the single change being the `AWX/awx` CR.
+
+AWX's own capacity model, which is the thing `SYSTEM_TASK_ABS_MEM` actually drives:
+
+| | before | after |
+| :-- | --: | --: |
+| task pods | 6 | **4** |
+| `mem_capacity` per pod | 79 | **20** |
+| `cpu_capacity` per pod | — | **8** |
+| `capacity` per pod | 79 | **20** |
+| `controlplane` total | 474 | **80** |
+
+`cpu_capacity: 8` confirms `SYSTEM_TASK_ABS_CPU = '2'` is emitted and that it does **not** bind:
+`capacity` tracks the memory derivation, as `capacity_adjustment: 1.0` implies.
+
+Host memory, `node_memory_MemAvailable_bytes`:
+
+| host | before | after |
+| :-- | --: | --: |
+| `k8s-south-node-1` | 29.3% free | **55.3% free** |
+| `k8s-south-node-2` | — | 68.7% free |
+
+**That beats the 40–43% predicted above, and the gap is probably not durable.** The prediction
+assumed the surviving pods keep their measured footprint; in fact every task pod was recreated by
+the rollout, so its forked workers are freshly COW-shared rather than 48,000 tasks into unsharing
+their pages. Expect node-1 to settle somewhat below 55% as the workers age. Re-measure in a week
+before treating the headroom as won.
+
+Not confirmed from metrics: the cgroup limits themselves.
+`kube_pod_container_resource_limits` returns **no data** here — kube-state-metrics is deliberately
+scoped to the kinds the dashboards plot, and that series is not among them. That is a gap in the
+collector, not a statement about the cluster; the limits are evidenced instead by the capacity
+figures above, which cannot change unless `SYSTEM_TASK_ABS_MEM` is set, which the operator cannot
+emit unless the limit is present.
+
 ## How to verify afterwards
 
 ```bash
