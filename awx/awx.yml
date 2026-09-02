@@ -5,7 +5,7 @@ metadata:
 spec:
   service_type: clusterip
   postgres_configuration_secret: postgres-configuration
-  task_replicas: 6
+  task_replicas: 4
   ipv6_disabled: true
   ingress_type: ingress
   ingress_class_name: nginx
@@ -14,3 +14,49 @@ spec:
       tls_secret: awx-tls-secret
   ingress_annotations: |
     cert-manager.io/cluster-issuer: letsencrypt-prod
+
+  # The memory limit below is load-bearing beyond the cgroup. The operator emits
+  # SYSTEM_TASK_ABS_MEM only when task_resource_requirements.limits.memory is set;
+  # without it AWX reads the *host's* 7.75 GiB and sizes its preforked pool from
+  # that -- max_workers 88 and advertised capacity 474 on a node with 2.3 GiB free.
+  # Setting it fixes the cgroup bound, the scheduler's view, and AWX's own model
+  # at once. See MEMORY-FOOTPRINT.md for the measurements.
+  task_resource_requirements:
+    requests:
+      cpu: 250m
+      memory: 1Gi
+    limits:
+      # Quoted deliberately: the CRD types cpu as a string, and the operator's
+      # cpu_string_to_decimal filter raises on a non-str. Keep this at 4 or below --
+      # above 4 the operator raises JOB_EVENT_WORKERS to match, which is the
+      # opposite of the intent here.
+      cpu: "2"
+      memory: 2Gi  # => SYSTEM_TASK_ABS_MEM='2Gi' => max_workers 27, capacity 20
+
+  # Jobs actually execute in awx-ee, so keep its ceiling generous; a tight limit
+  # turns a large job into an OOMKill.
+  ee_resource_requirements:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      memory: 1Gi
+
+  # A running job's events queue in this pod's redis until the callback receiver
+  # drains them, and the operator's redis.conf sets no maxmemory -- so the cgroup
+  # limit is the only bound. Sized for the chattiest job in the estate (kubespray)
+  # rather than the idle footprint; a limit costs nothing until it is hit, since
+  # the scheduler only counts requests.
+  redis_resource_requirements:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      memory: 512Mi
+
+  rsyslog_resource_requirements:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      memory: 256Mi
