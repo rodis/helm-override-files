@@ -1,0 +1,42 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Upstream's recommended.yaml at the pinned version, downloaded next to this file by
+# playbooks/install.yml. Edited here, before it is applied, rather than patched afterwards: a
+# post-apply patch would fight the manifest on every run -- re-apply --leader-elect, roll the pod,
+# strip it, roll it again.
+resources:
+  - doppler-secrets-operator.yaml
+
+# Leader election OFF, and Recreate so two operators never run at once.
+#
+# Why: the operator was losing its lease, and restarting, about twice a day (1,000 restarts in 233
+# days on infra) whenever an etcd fsync stalled longer than its 10s renew deadline --
+# infra-objectives/CLAUDE.md, "What the substrate does to the control plane". The other controllers
+# got longer lease timings instead; this one cannot, because v1.7.1 exposes only --leader-elect and
+# compiles in controller-runtime's 15s/10s/2s (main.go, checked 2026-09-26).
+#
+# Why that is safe: it runs one replica, so leader election was only ever guarding against two
+# copies overlapping during a rollout -- and Recreate removes that overlap by stopping the old pod
+# before starting the new one. The remaining edge, a node partitioned long enough for the pod to be
+# rescheduled while the old one still runs, would briefly have two operators writing the same values
+# from Doppler into the same Secrets: idempotent, and self-ending when the partition heals.
+patches:
+  - target:
+      kind: Deployment
+      name: doppler-operator-controller-manager
+    patch: |-
+      # `test` first: if upstream ever reorders the args, the plan fails here instead of removing
+      # whichever flag happens to be third.
+      - op: test
+        path: /spec/template/spec/containers/0/args/2
+        value: --leader-elect
+      - op: remove
+        path: /spec/template/spec/containers/0/args/2
+      # rollingUpdate: null is load-bearing. The live object carries RollingUpdate's defaults, and
+      # the API rejects type Recreate while a rollingUpdate block is still present; null removes it.
+      - op: add
+        path: /spec/strategy
+        value:
+          type: Recreate
+          rollingUpdate: null

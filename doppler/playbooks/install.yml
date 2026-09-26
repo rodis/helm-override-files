@@ -34,10 +34,18 @@
         dest: "{{ doppler_operator_manifest_path }}"
         mode: '0664'
       check_mode: false   # runner-local scratch; see above
+    # The kustomization edits the downloaded manifest before anything is applied: leader election
+    # off, Recreate strategy. See the comments in ../kustomization.yml for why.
+    - name: Copy the kustomization next to the downloaded manifest
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/../kustomization.yml"
+        dest: "{{ doppler_operator_dir.path }}/kustomization.yml"
+        mode: '0644'
+      check_mode: false   # runner-local scratch; see above
     - name: Apply doppler manifest to the cluster.
       kubernetes.core.k8s:
         state: present
-        src: "{{ doppler_operator_manifest_path }}"
+        definition: "{{ lookup('kubernetes.core.kustomize', dir=doppler_operator_dir.path, binary_path='/usr/bin/kustomize') }}"
     - name: Create Doppler Secret Token
       # The module returns the object it applied, data included, so without this the token lands
       # in the run log -- which on Spacelift is kept in run history.
