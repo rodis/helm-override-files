@@ -8,3 +8,16 @@ crds:
 # at install time; the install playbooks wait on the deployments instead.
 startupapicheck:
   enabled: false
+
+# Leader election timings, raised from the chart's 60s/40s/15s. Every lease holder on infra was being
+# dropped about twice a day by etcd stalls: a single WAL fsync stuck 4-10+s on the storage, which
+# DreamHost's storage does not fix (infra-objectives/CLAUDE.md, "What the substrate does to the
+# control plane"). A 60s renew deadline survives every stall measured in the week to 2026-09-26.
+# The cost is slower failover when a leader truly dies -- and with one replica there is no standby
+# to fail over to anyway.
+global:
+  leaderElection:
+    namespace: kube-system
+    leaseDuration: 90s
+    renewDeadline: 60s
+    retryPeriod: 10s

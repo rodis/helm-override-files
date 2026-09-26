@@ -11,3 +11,37 @@ images:
 
 # Specify a custom namespace in which to install AWX
 namespace: awx
+
+# Leader election timings for the operator, raised from ansible-operator's 15s/10s. It was losing its
+# lease -- and restarting -- about twice a day (1,066 restarts), whenever an etcd fsync stalled for
+# longer than the 10s renew deadline; see cert-manager/values.yml and infra-objectives/CLAUDE.md,
+# "What the substrate does to the control plane". The flags exist in the 2.19.1 image's
+# ansible-operator (checked with `ansible-operator run --help` in the running pod, 2026-09-26);
+# there is no retry-period flag, so that stays at its 2s default.
+#
+# INLINE, not a patch file: playbooks/install.yml copies only this file and awx.yml into the operator
+# checkout, so a separate patch file would silently never be applied.
+#
+# A strategic merge replaces the container's whole args list. The first four are upstream's own
+# (config/default at 2.19.1), copied verbatim -- re-check them whenever the operator version moves.
+patches:
+  - target:
+      kind: Deployment
+      name: awx-operator-controller-manager
+    patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: awx-operator-controller-manager
+      spec:
+        template:
+          spec:
+            containers:
+              - name: awx-manager
+                args:
+                  - --health-probe-bind-address=:6789
+                  - --metrics-bind-address=127.0.0.1:8080
+                  - --leader-elect
+                  - --leader-election-id=awx-operator
+                  - --leader-elect-lease-duration=90s
+                  - --leader-elect-renew-deadline=60s
