@@ -1,5 +1,0 @@
-service:
-  externalIPs:
-    {% for host in groups['nginx_ingress_controller'] -%}
-    - {{ hostvars[host]['ansible_ssh_host'] }}
-    {% endfor %}

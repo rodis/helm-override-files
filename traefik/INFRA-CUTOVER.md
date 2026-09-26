@@ -180,5 +180,10 @@ first request reaching the hostPort.
 | 4 disable nginx stack | owner |
 | 5 ACME | `letsencrypt-staging` Certificate for `infra.rods.me` Ready in 30s; Let's Encrypt's validators fetched the HTTP-01 path from three IPs, 200, not redirected. The solver Ingress has no `ingressClassName` (cert-manager's `class:` sets the annotation), and Traefik served it anyway. Probe deleted |
 
+**Afterwards, 2026-09-26:** the orphaned `cert-manager-startupapicheck` Job was deleted, and the
+`nginx-ingress-controller/` directory was removed from this repo. **The rollback described above no
+longer exists as written.** Restoring nginx now means reverting that removal (the chart stays pinned
+at 12.0.7 in the reverted files) and re-creating a stack for it.
+
 Still open: the single infra platform stack and the AWX `Install platform` template (above), and
 the follow-ups listed before this section.

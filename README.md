@@ -4,11 +4,11 @@ Kustomize/Helm overrides for shared cluster infrastructure, deployed to the
 prod cluster (mostly via the per-service `playbooks/`).
 
 Services: `argocd`, `awx`, `cert-manager`, `doppler`, `kafka`, `n8n`,
-`nginx-ingress-controller`, `redpanda`, `traefik`.
+`redpanda`, `traefik`.
 
 `platform/` installs what every cluster gets after it is built -- `traefik`, `cert-manager`,
-`doppler`, in that order. `nginx-ingress-controller` is being retired from infra; see
-`traefik/INFRA-CUTOVER.md`.
+`doppler`, in that order. Infra and production both run Traefik; the bitnami
+`nginx-ingress-controller` it replaced was removed on 2026-09-26 (see `traefik/INFRA-CUTOVER.md`).
 
 **Each app directory is cluster-agnostic, and that is the contract.** The same `traefik/`,
 `cert-manager/` and `doppler/` install infra, production and development: no hostnames, IPs,
