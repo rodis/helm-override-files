@@ -1,0 +1,18 @@
+# Let's Encrypt staging: same HTTP-01 path as letsencrypt-prod, untrusted certificates, and rate
+# limits generous enough to test against. It exists so a change to the ingress controller can be
+# proven to still solve ACME challenges *before* a production renewal depends on it -- issue a
+# throwaway Certificate against this issuer, watch it go Ready, delete it.
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-staging
+spec:
+  acme:
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    email: rosario.disomma@gmail.com
+    privateKeySecretRef:
+      name: letsencrypt-staging
+    solvers:
+      - http01:
+          ingress:
+            class: nginx

@@ -3,3 +3,4 @@ generators:
 
 resources:
   - le-prod-cluster-issuer.yml
+  - le-staging-cluster-issuer.yml

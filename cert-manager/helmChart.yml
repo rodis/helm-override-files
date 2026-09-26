@@ -5,5 +5,8 @@ metadata:
 name: cert-manager
 releaseName: cert-manager
 repo: oci://quay.io/jetstack/charts
+# Pinned to what production runs (read 2026-09-26). Infra runs v1.19.2, so the first apply there is
+# a patch upgrade -- deliberately small, and the same version on every cluster afterwards.
+version: v1.19.3
 valuesFile: values.yml
 namespace: cert-manager

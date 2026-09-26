@@ -1,0 +1,27 @@
+# The platform every cluster gets after it is built: ingress, certificates, secrets.
+#
+# One verb, so that "what does a cluster look like once installed" has a single answer on infra,
+# production and development alike, instead of three sets of stacks and templates that drift.
+# AWX launches it against a workload cluster (after [66] Post-install tests); on infra it runs from
+# Spacelift, because AWX runs there and cannot install its own front door.
+#
+# Each imported playbook is also runnable alone, and resolves its files from its own directory --
+# `playbook_dir` follows import_playbook to the imported file (checked 2026-09-26).
+#
+# Order is by dependency, not taste:
+#   traefik       -- serves the IngressClass `nginx` that everything else is written against
+#   cert-manager  -- its ClusterIssuers solve HTTP-01 through that class, so the ingress comes first
+#   doppler       -- last only because nothing above needs it; AWX's own secrets come from it, so on
+#                    a cluster that will host AWX it must exist before AWX is installed
+#
+# Needs DOPPLER_TOKEN_SECRET in the environment (Spacelift context on infra, AWX credential [8]
+# elsewhere) -- the Doppler playbook writes it into the cluster and fails without it.
+
+- name: Ingress
+  ansible.builtin.import_playbook: ../../traefik/playbooks/install.yml
+
+- name: Certificates
+  ansible.builtin.import_playbook: ../../cert-manager/playbooks/install.yml
+
+- name: Secrets
+  ansible.builtin.import_playbook: ../../doppler/playbooks/install.yml

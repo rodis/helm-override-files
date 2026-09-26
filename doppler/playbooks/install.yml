@@ -4,6 +4,14 @@
   become: false
   gather_facts: false
   tasks:
+    # An unset variable reads as '' and would be written into the cluster as an empty token: the
+    # task succeeds, the operator starts, and every DopplerSecret fails later and elsewhere. Fail
+    # here instead, where the cause is still obvious.
+    - name: Refuse to run without a Doppler token
+      ansible.builtin.assert:
+        that: lookup('env', 'DOPPLER_TOKEN_SECRET') | length > 0
+        fail_msg: DOPPLER_TOKEN_SECRET is not set; the operator would be installed with an empty token.
+        quiet: true
     - name: Create a temporary directory
       ansible.builtin.tempfile:
         state: directory
@@ -18,9 +26,11 @@
     - name: Compose path
       set_fact:
         doppler_operator_manifest_path: "{{ doppler_operator_dir.path }}/doppler-secrets-operator.yaml"
+    # Pinned: `latest` meant each cluster got whatever was current on the day it was built.
+    # v1.7.1 is what both production and infra run (read 2026-09-26).
     - name: Download doppler secrets operator manifest
       ansible.builtin.get_url:
-        url: https://github.com/DopplerHQ/kubernetes-operator/releases/latest/download/recommended.yaml
+        url: https://github.com/DopplerHQ/kubernetes-operator/releases/download/v1.7.1/recommended.yaml
         dest: "{{ doppler_operator_manifest_path }}"
         mode: '0664'
       check_mode: false   # runner-local scratch; see above
@@ -29,6 +39,9 @@
         state: present
         src: "{{ doppler_operator_manifest_path }}"
     - name: Create Doppler Secret Token
+      # The module returns the object it applied, data included, so without this the token lands
+      # in the run log -- which on Spacelift is kept in run history.
+      no_log: true
       kubernetes.core.k8s:
         state: present
         definition:

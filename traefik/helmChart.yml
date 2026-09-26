@@ -8,5 +8,10 @@ metadata:
 name: traefik
 releaseName: traefik
 repo: https://traefik.github.io/charts
+# Pinned to what production runs (traefik-39.0.2 / traefik v3.6.8, read 2026-09-26). Unpinned,
+# every install pulled the newest chart, so two clusters built a month apart ran different
+# Traefiks from the same commit. Bump deliberately, together with the CRD/RBAC tag in
+# playbooks/install.yml.
+version: 39.0.2
 valuesFile: values.yml
 namespace: traefik

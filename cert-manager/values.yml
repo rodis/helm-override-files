@@ -1,2 +1,10 @@
 crds:
   enabled: true
+
+# The startupapicheck is a Helm post-install hook. Rendered through kustomize, hooks are not hooks:
+# the Job becomes an ordinary resource that every apply tries to patch, and a Job's pod template is
+# immutable -- which is why `Ansible: south: Install the cert manager` has failed at plan with
+# `Job.batch "cert-manager-startupapicheck" is invalid`. It only proves the webhook answers once,
+# at install time; the install playbooks wait on the deployments instead.
+startupapicheck:
+  enabled: false
