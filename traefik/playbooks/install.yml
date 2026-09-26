@@ -19,7 +19,34 @@
       kubernetes.core.k8s:
         state: present
         src: https://raw.githubusercontent.com/traefik/traefik/v3.6.8/docs/content/reference/dynamic-configuration/kubernetes-ingress-nginx-rbac.yml
+    # On a first install a check-mode plan cannot dry-run the chart: the namespace and CRDs above
+    # were only dry-run too, so the server rejects the namespaced objects (`namespaces "traefik"
+    # not found`) and would reject the IngressRoute kind next. That failed infra's first plan on
+    # 2026-09-26. Creating them for real during a plan would give the plan a side effect, so the
+    # plan skips the chart instead and says why; once one apply has run, plans cover everything.
+    - name: Look up what a previous install left in place
+      kubernetes.core.k8s_info:
+        kind: "{{ item.kind }}"
+        name: "{{ item.name }}"
+      loop:
+        - {kind: Namespace, name: traefik}
+        - {kind: CustomResourceDefinition, name: ingressroutes.traefik.io}
+      register: traefik_prior
+      check_mode: false   # a read, consumed below
+
+    - name: Record whether the chart can be planned
+      ansible.builtin.set_fact:
+        traefik_first_install: "{{ traefik_prior.results | selectattr('resources', 'equalto', []) | list | length > 0 }}"
+
+    - name: Explain the skipped step
+      ansible.builtin.debug:
+        msg: >-
+          First install: the traefik namespace or CRDs do not exist yet, so this plan cannot
+          dry-run the chart. The apply will install it. Everything above was planned.
+      when: ansible_check_mode and traefik_first_install | bool
+
     - name: Install application from Helm and kustomize
+      when: not (ansible_check_mode and traefik_first_install | bool)
       kubernetes.core.k8s:
         state: present
         definition: "{{ lookup('kubernetes.core.kustomize', dir=playbook_dir + '/..', binary_path='/usr/bin/kustomize', enable_helm=True) }}"
