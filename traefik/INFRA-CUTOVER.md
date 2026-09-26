@@ -1,8 +1,8 @@
 # Moving infra from nginx to Traefik
 
-**Status: DRAFT, 2026-09-26. Nothing here has been applied.** Infra is `south`, the management
-plane. Under rule 7 of `infra-objectives/CLAUDE.md` every step that changes it needs the owner's
-approval for that specific occasion. This document is what that approval would be given against.
+**Status: DONE, 2026-09-26.** Infra (`south`, the management plane) runs Traefik. Every step
+was approved by the owner for that occasion, per rule 7 of `infra-objectives/CLAUDE.md`. The
+plan below is kept as written. What actually happened is in *Outcome* at the end.
 
 ## Why
 
@@ -168,3 +168,17 @@ first request reaching the hostPort.
   "never touches … `ingress-nginx`" (it should say `traefik`); the *three stacks still fail at plan*
   table (cert-manager fixed, the nginx stack retired); and the Spacelift and bootstrap-ordering
   sections, which list "the ingress controller" among south's stacks.
+
+## Outcome, 2026-09-26
+
+| step | result |
+| :-- | :-- |
+| 0 preflight | canary job 3707 green (3 × `runner_on_ok`), `check-awx-status.py` 14/14 |
+| 1 cert-manager | run `01M3FKRJ684HNEAB6PXPENVTQA` planned clean for the first time since August and applied v1.19.3; both issuers Ready, `awx-tls-secret` untouched. The apply landed a minute or two after confirm, so a check made immediately afterwards reads "nothing changed". Wait before grading |
+| 2 Traefik | the first run, `01M3FNFPBR9VTN2ES6BSVVPRV6`, **failed at plan** with nothing applied: `namespaces "traefik" not found`, because in check mode the namespace and CRDs were only dry-run. Fixed in `ae21708` (a first-install plan skips the chart and says so). Run `01M3FP4MFYD9SH62S682F3WSAF` applied it. Tested on the pod IP: AWX ping 200, the Let's Encrypt cert, HTTP → 308 to HTTPS (the nginx provider's ssl-redirect, same as nginx) |
+| 3 remove nginx | 15 objects and the namespace gone, `IngressClass/nginx` kept. Public ping 200 served by Traefik (seen in its access log), canary job 3711 green, `check-awx-status.py` 14/14. No downtime observed |
+| 4 disable nginx stack | owner |
+| 5 ACME | `letsencrypt-staging` Certificate for `infra.rods.me` Ready in 30s; Let's Encrypt's validators fetched the HTTP-01 path from three IPs, 200, not redirected. The solver Ingress has no `ingressClassName` (cert-manager's `class:` sets the annotation), and Traefik served it anyway. Probe deleted |
+
+Still open: the single infra platform stack and the AWX `Install platform` template (above), and
+the follow-ups listed before this section.
