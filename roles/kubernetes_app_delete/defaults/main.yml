@@ -1,0 +1,74 @@
+---
+# The applications this role knows how to delete, and what each one is made of.
+#
+# This map is the whole reason the role exists. Seven hand-written `playbooks/delete.yml` files
+# had drifted into four defects by 2026-10-03 -- n8n's task was named "Delete Redpanda", traefik's
+# was named "Delete application", kafka's removed neither the namespace nor the SASL secret its
+# install created, and redpanda's needed a `context` that nothing had supplied since the workflow
+# job templates were deleted on 2026-08-22. One map, read by one set of tasks, cannot drift
+# against itself.
+#
+#   path       directory under the repo root holding the kustomization
+#   overlay    true when the real directory is <path>/kustomize/overlays/<context>
+#   namespace  removed last, after the rendered resources, as the backstop sweep
+#   extra      manifests the install playbook applies with `src:` OUTSIDE the kustomization,
+#              which rendering the kustomize directory therefore does not account for
+#   platform   cluster infrastructure: deleting it breaks ingress or certificates for every
+#              other application, so it needs naming a second time to proceed
+#
+# Deliberately absent: `doppler` and `awx`. Neither installs from a directory in this repo --
+# doppler downloads a release manifest into a tempdir, awx clones the operator -- so neither fits
+# a path-based delete, and AWX additionally runs in `south`, which rule 7 puts off-limits.
+kubernetes_app_delete_apps:
+  argocd:
+    path: argocd
+    overlay: true
+    namespace: argocd
+  cert-manager:
+    path: cert-manager
+    overlay: false
+    namespace: cert-manager
+    platform: true
+    extra:
+      - cert-manager/namespace.yml
+  kafka:
+    path: kafka
+    overlay: false
+    namespace: kafka
+    extra:
+      - kafka/namespace.yml
+      - kafka/kafka-sasl-credentials.yml
+  n8n:
+    path: n8n
+    overlay: true
+    namespace: n8n
+  redpanda:
+    path: redpanda
+    overlay: true
+    namespace: redpanda
+    extra:
+      - redpanda/redpanda-kafka-sasl-credentials.yml
+  traefik:
+    path: traefik
+    overlay: false
+    namespace: traefik
+    platform: true
+    extra:
+      - traefik/namespace.yml
+
+# No default for the application. A delete that chooses its own target when the caller forgets an
+# argument is the `_Dummy_default` failure in its most expensive form: it would succeed, green,
+# against whatever happened to be first. Leaving it undefined makes an omission loud.
+# kubernetes_app_delete_app: (intentionally unset)
+
+# A read until explicitly armed -- rule 5. Dry run renders the application and reports every
+# object it would remove, and needs no authority to do so.
+kubernetes_app_delete_dry_run: true
+
+# The namespace is removed after the rendered resources, catching anything namespaced that the
+# render missed. Set false to strip the application but keep the namespace.
+kubernetes_app_delete_remove_namespace: true
+
+kubernetes_app_delete_kustomize_binary: /usr/bin/kustomize
+kubernetes_app_delete_wait: true
+kubernetes_app_delete_wait_timeout: 300

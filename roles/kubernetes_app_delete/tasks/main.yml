@@ -1,0 +1,217 @@
+---
+# Remove one application this repo installs, by undoing exactly what its install playbook did.
+#
+# Every guard below exists because the alternative failed somewhere in this estate already; the
+# comments say which. Read defaults/main.yml first -- the per-application map is the substance,
+# these tasks are only the machinery that reads it.
+#
+# Every Kubernetes call is delegated to localhost so the role behaves identically whether the
+# calling play runs local or connects to hosts over SSH. `connection: local` at play level does
+# not survive being included, which is how roles/openstack_dead_ports nearly ran OpenStack calls
+# on a guest (2026-08-22).
+
+- name: Refuse to run without a named application
+  ansible.builtin.assert:
+    that:
+      - kubernetes_app_delete_app is defined
+      - kubernetes_app_delete_app in kubernetes_app_delete_apps
+    fail_msg: >-
+      kubernetes_app_delete_app must name one of:
+      {{ kubernetes_app_delete_apps.keys() | sort | join(', ') }}.
+      It has no default on purpose -- a delete that picks its own target when the caller forgets
+      an argument is the failure this check exists to prevent.
+    success_msg: "target: {{ kubernetes_app_delete_app | default('(unset)') }}"
+    quiet: true
+  run_once: true
+
+- name: Resolve the application's layout
+  ansible.builtin.set_fact:
+    kubernetes_app_delete_spec: "{{ kubernetes_app_delete_apps[kubernetes_app_delete_app] }}"
+    kubernetes_app_delete_root: "{{ (role_path ~ '/../..') | realpath }}"
+  delegate_to: localhost
+  run_once: true
+
+# The interlock, and the one line in this file most worth reading.
+#
+# The required action is written LITERALLY, not taken from a variable. roles/openstack_dead_ports
+# learned this the expensive way: its check read `required_actions` from play vars, extra_vars
+# outrank play vars, and so a caller passing required_actions=[] satisfied the interlock while
+# granting nothing at all. A check that the caller can disarm is decoration.
+#
+# `authorizing_objective` and `granted_actions` are deliberately NOT prefixed with the role name.
+# They are the repo-wide convention shared by every destructive verb, so one caller granting one
+# action to several roles passes one set of variables rather than one set per role.
+- name: Refuse to delete anything without an authorising objective
+  ansible.builtin.assert:
+    that:
+      - authorizing_objective | default('') | length > 0
+      - "'kubernetes.app.delete' in (granted_actions | default([]))"
+    fail_msg: >-
+      This removes {{ kubernetes_app_delete_app }} from the cluster and will not do so on its own.
+      Set authorizing_objective, and include 'kubernetes.app.delete' in granted_actions -- taken
+      from that objective's may_destroy list. Run with kubernetes_app_delete_dry_run=true to see
+      what it would remove without needing any authority.
+    # `| default` is not decoration: success_msg is templated even when the assertion
+    # fails, so an undefined authorizing_objective would mask fail_msg with a resolver error
+    # and tell the operator nothing about what to set.
+    success_msg: "authorised by {{ authorizing_objective | default('(none)') }} for kubernetes.app.delete"
+    quiet: true
+  run_once: true
+  when: not (kubernetes_app_delete_dry_run | bool)
+
+# Traefik serves the IngressClass every other application's Ingress is written against, and
+# cert-manager issues the certificates behind them. Removing either takes the cluster's front door
+# with it, so the grant above is not enough on its own: the caller names the application a second
+# time. Same shape as [20] Cluster: Reset, whose `reset_confirmation` survey makes a catastrophic
+# verb usable by a human and impossible to trigger by forgetting an argument.
+- name: Refuse to delete platform infrastructure without naming it a second time
+  ansible.builtin.assert:
+    that:
+      - kubernetes_app_delete_confirm_platform | default('') == kubernetes_app_delete_app
+    fail_msg: >-
+      {{ kubernetes_app_delete_app }} is platform infrastructure -- every other application's
+      ingress or certificates depend on it. To proceed, set
+      kubernetes_app_delete_confirm_platform to the literal string
+      '{{ kubernetes_app_delete_app }}'.
+    success_msg: "platform deletion of {{ kubernetes_app_delete_app }} confirmed"
+    quiet: true
+  run_once: true
+  when:
+    - not (kubernetes_app_delete_dry_run | bool)
+    - kubernetes_app_delete_spec.platform | default(false) | bool
+
+- name: Refuse an overlay application without a context
+  ansible.builtin.assert:
+    that:
+      - context | default('') | length > 0
+    fail_msg: >-
+      {{ kubernetes_app_delete_app }} installs from kustomize/overlays/<context>, so `context`
+      says which cluster's overlay to remove. Nothing has supplied it by default since the
+      workflow job templates were deleted on 2026-08-22, which is why it is asked for explicitly.
+    quiet: true
+  run_once: true
+  when: kubernetes_app_delete_spec.overlay | default(false) | bool
+
+- name: Compose the kustomize directory
+  ansible.builtin.set_fact:
+    kubernetes_app_delete_dir: >-
+      {{ kubernetes_app_delete_root }}/{{ kubernetes_app_delete_spec.path }}{{
+        ('/kustomize/overlays/' ~ context)
+        if (kubernetes_app_delete_spec.overlay | default(false) | bool)
+        else ''
+      }}
+  delegate_to: localhost
+  run_once: true
+
+- name: Confirm that directory holds a kustomization
+  ansible.builtin.stat:
+    path: "{{ kubernetes_app_delete_dir | trim }}/kustomization.yml"
+  register: kubernetes_app_delete_kustomization
+  delegate_to: localhost
+  run_once: true
+  check_mode: false
+
+# A missing directory must stop the run rather than render nothing. `k8s: state=absent` with an
+# empty definition reports success having deleted nothing -- the same shape as the zero-host
+# inventory that made [27] _Dummy_default dangerous: a failure that does not resemble one.
+- name: Refuse to continue against a directory that is not there
+  ansible.builtin.assert:
+    that: kubernetes_app_delete_kustomization.stat.exists
+    fail_msg: >-
+      No kustomization.yml under {{ kubernetes_app_delete_dir | trim }}. Rendering nothing would
+      delete nothing and report success, so this stops instead. Check `context`
+      ({{ context | default('unset') }}) against the overlays that exist for
+      {{ kubernetes_app_delete_app }}.
+    quiet: true
+  run_once: true
+
+# The lookup returns rendered YAML as a STRING, not a list of resources -- which is why the
+# install playbooks can hand it straight to `definition:`. It is kept in that form for the delete
+# below, for exact parity with what install applied, and parsed separately for the dry-run report.
+# Parsing it to drive `definition:` would be a gratuitous difference between the two directions.
+- name: Render what the application consists of
+  ansible.builtin.set_fact:
+    kubernetes_app_delete_rendered: "{{ lookup('kubernetes.core.kustomize', dir=kubernetes_app_delete_dir | trim, binary_path=kubernetes_app_delete_kustomize_binary, enable_helm=True) }}"
+  delegate_to: localhost
+  run_once: true
+
+- name: Read back the rendered objects, so the report can name each one
+  ansible.builtin.set_fact:
+    kubernetes_app_delete_resources: >-
+      {{ kubernetes_app_delete_rendered | from_yaml_all | select('truthy') | list }}
+  delegate_to: localhost
+  run_once: true
+
+- name: Report what would be removed
+  when: kubernetes_app_delete_dry_run | bool
+  run_once: true
+  block:
+
+    - name: Report the rendered resources
+      ansible.builtin.debug:
+        msg: >-
+          would: delete {{ item.kind }}/{{ item.metadata.name }}
+          {{ ('in ' ~ item.metadata.namespace) if item.metadata.namespace is defined else '(cluster-scoped)' }}
+      loop: "{{ kubernetes_app_delete_resources }}"
+      loop_control:
+        label: "{{ item.kind }}/{{ item.metadata.name }}"
+
+    - name: Report the manifests the install applied outside the kustomization
+      ansible.builtin.debug:
+        msg: "would: delete everything declared in {{ item }}"
+      loop: "{{ kubernetes_app_delete_spec.extra | default([]) }}"
+
+    - name: Report the namespace
+      ansible.builtin.debug:
+        msg: "would: delete Namespace/{{ kubernetes_app_delete_spec.namespace }}"
+      when:
+        - kubernetes_app_delete_remove_namespace | bool
+        - kubernetes_app_delete_spec.namespace is defined
+
+    - name: Summarise
+      ansible.builtin.debug:
+        msg: >-
+          {{ kubernetes_app_delete_resources | length }} rendered object(s),
+          {{ kubernetes_app_delete_spec.extra | default([]) | length }} extra manifest(s),
+          namespace {{ 'yes' if (kubernetes_app_delete_remove_namespace | bool) else 'no' }}.
+          Nothing was changed. Re-run with kubernetes_app_delete_dry_run=false, an
+          authorizing_objective, and 'kubernetes.app.delete' in granted_actions to apply.
+
+- name: Remove the application
+  when: not (kubernetes_app_delete_dry_run | bool)
+  run_once: true
+  block:
+
+    - name: Delete the rendered resources
+      kubernetes.core.k8s:
+        state: absent
+        definition: "{{ kubernetes_app_delete_rendered }}"
+        wait: "{{ kubernetes_app_delete_wait | bool }}"
+        wait_timeout: "{{ kubernetes_app_delete_wait_timeout | int }}"
+      delegate_to: localhost
+
+    # no_log because several of these are Secret manifests and the module echoes the resource it
+    # acted on. The paths were printed by the dry run, so nothing diagnostic is lost here.
+    - name: Delete what the install applied outside the kustomization
+      kubernetes.core.k8s:
+        state: absent
+        src: "{{ kubernetes_app_delete_root }}/{{ item }}"
+      loop: "{{ kubernetes_app_delete_spec.extra | default([]) }}"
+      delegate_to: localhost
+      no_log: true
+
+    # Last, and deliberately so: it is the backstop that catches anything namespaced the render
+    # did not account for. Cluster-scoped objects -- CRDs, ClusterRoles -- are not covered by it
+    # and come from the render above.
+    - name: Delete the namespace
+      kubernetes.core.k8s:
+        state: absent
+        api_version: v1
+        kind: Namespace
+        name: "{{ kubernetes_app_delete_spec.namespace }}"
+        wait: "{{ kubernetes_app_delete_wait | bool }}"
+        wait_timeout: "{{ kubernetes_app_delete_wait_timeout | int }}"
+      delegate_to: localhost
+      when:
+        - kubernetes_app_delete_remove_namespace | bool
+        - kubernetes_app_delete_spec.namespace is defined

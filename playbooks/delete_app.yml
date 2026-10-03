@@ -1,0 +1,42 @@
+---
+# Standalone entry point for the kubernetes_app_delete role.
+#
+# Registered in AWX as `General: Kubernetes: App: Delete`. One template for every application
+# this repo installs, in place of one hand-written delete playbook per application -- see the
+# role's README for why that duplication had to go.
+#
+#   Report:  app=redpanda context=production dry_run=true     (a read; needs no authority)
+#   Remove:  app=redpanda context=production dry_run=false
+#            authorizing_objective=<objective>
+#            granted_actions=['kubernetes.app.delete']
+#
+# WHAT BINDS THIS TO A CLUSTER IS THE CREDENTIAL, NOT THE INVENTORY. The play runs on localhost
+# and talks to whatever kubeconfig the job's Kubernetes credential supplies, so the inventory is
+# nearly decorative here while the credential decides which cluster loses an application. The
+# template must therefore carry NO default credential and ask for one on launch: an omitted
+# credential has to fail, not quietly bind the last cluster somebody used. That is the same trap
+# the tenant-credential default set for `General:` verbs, where the wrong project is bound and
+# every host reports "no such instance" with the job green.
+#
+# The role is referenced by relative path rather than by name, for the reason given in
+# infra-automation's playbooks/openstack/dead_ports.yml: role names resolve against the playbook's
+# directory and the configured roles_path, this repo has no ansible.cfg, and an explicit path
+# needs no configuration and cannot resolve to the wrong thing.
+#
+# The external variable names are kept short because a human types them into an AWX survey;
+# they are mapped onto the role's prefixed variables here, at the boundary. `authorizing_objective`
+# and `granted_actions` pass through unprefixed -- they are the repo-wide destructive-verb
+# convention and belong to no single role.
+
+- name: Delete an application from the cluster
+  hosts: localhost
+  connection: local
+  become: false
+  gather_facts: false
+
+  roles:
+    - role: ../roles/kubernetes_app_delete
+      kubernetes_app_delete_app: "{{ app | default('') }}"
+      kubernetes_app_delete_dry_run: "{{ dry_run | default(true) }}"
+      kubernetes_app_delete_remove_namespace: "{{ remove_namespace | default(true) }}"
+      kubernetes_app_delete_confirm_platform: "{{ confirm_platform | default('') }}"

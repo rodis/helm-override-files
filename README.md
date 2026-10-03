@@ -6,6 +6,12 @@ prod cluster (mostly via the per-service `playbooks/`).
 Services: `argocd`, `awx`, `cert-manager`, `doppler`, `kafka`, `n8n`,
 `redpanda`, `traefik`.
 
+`playbooks/delete_app.yml` removes one of them again, for every app, through the
+`kubernetes_app_delete` role -- one verb in place of the per-app `playbooks/delete.yml` files it
+replaced on 2026-10-03, which had drifted into four separate defects between them. It is a dry run
+until armed and refuses to delete anything without an authorising objective; read
+`roles/kubernetes_app_delete/README.md` before using it.
+
 `platform/` installs what every cluster gets after it is built -- `traefik`, `cert-manager`,
 `doppler`, in that order. Infra and production both run Traefik; the bitnami
 `nginx-ingress-controller` it replaced was removed on 2026-09-26 (see `traefik/INFRA-CUTOVER.md`).

@@ -94,8 +94,8 @@ controller answered.
 
 **Rollback** (at step 3 or later): re-enable the nginx stack and deploy `install.yml`. With the chart
 pinned to 12.0.7 and the image already pinned, this restores the Service and its externalIP. Then
-delete the Traefik DaemonSet (`traefik/playbooks/delete.yml`), so the two do not sit behind one
-address indefinitely.
+delete the Traefik DaemonSet (`playbooks/delete_app.yml` with `app=traefik`, which also needs
+`confirm_platform=traefik`), so the two do not sit behind one address indefinitely.
 
 **Expected downtime:** none planned. At worst, the seconds between deleting the Service and the
 first request reaching the hostPort.
