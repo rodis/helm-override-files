@@ -45,7 +45,16 @@
   ansible.builtin.assert:
     that:
       - authorizing_objective | default('') | length > 0
-      - "'kubernetes.app.delete' in (granted_actions | default([]))"
+      # granted_actions must be a real LIST. `'x' in some_string` is a SUBSTRING test in Jinja, so
+      # a plain string sails through: measured 2026-10-03, both granted_actions="kubernetes.app.delete"
+      # and granted_actions="absolutely-not-kubernetes.app.delete-no" satisfied the bare `in` check
+      # and reached the render. An AWX survey hands back strings, so this is the shape the verb
+      # would actually have met. Same family as the required_actions bypass: a check that looks
+      # like membership and is not.
+      - granted_actions is defined
+      - granted_actions is sequence
+      - granted_actions is not string
+      - "'kubernetes.app.delete' in granted_actions"
     fail_msg: >-
       This removes {{ kubernetes_app_delete_app }} from the cluster and will not do so on its own.
       Set authorizing_objective, and include 'kubernetes.app.delete' in granted_actions -- taken
