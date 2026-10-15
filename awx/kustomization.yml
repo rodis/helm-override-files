@@ -8,6 +8,25 @@ resources:
 images:
   - name: quay.io/ansible/awx-operator
     newTag: 2.19.1
+  # kube-rbac-proxy comes from upstream's config/default base, which still names the Google-hosted
+  # MIRROR gcr.io/kubebuilder. That mirror has been withdrawn: the manifest 404s, and containerd
+  # reports `failed to resolve image: not found`. quay.io/brancz is the project's own registry and
+  # the source the mirror copied from; same v0.15.0, same digest lineage.
+  #
+  # Found 2026-10-15 when k8s-south-master-2 joined: the operator had been running for 18 days only
+  # because node-1's containerd had the image cached from before the withdrawal, so it started
+  # nowhere else. Nothing in the estate had noticed, because nothing re-pulls an image it already
+  # has -- an image can stop existing and a cluster keeps working until the first reschedule.
+  # Destroying the last node holding the cache would have made the operator unstartable estate-wide.
+  #
+  # Only the operator's own metrics sit behind this proxy, on 8443, and nothing scrapes them: the
+  # alloy config scrapes AWX's APPLICATION metrics at infra.rods.me/api/v2/metrics from outside the
+  # cluster, and there are no ServiceMonitor/PodMonitor CRDs installed at all. It is kept rather
+  # than deleted because repointing is the smaller change and keeps a future operator bump a clean
+  # diff against upstream.
+  - name: gcr.io/kubebuilder/kube-rbac-proxy
+    newName: quay.io/brancz/kube-rbac-proxy
+    newTag: v0.15.0
 
 # Specify a custom namespace in which to install AWX
 namespace: awx
