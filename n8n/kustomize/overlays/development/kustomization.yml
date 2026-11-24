@@ -1,5 +1,12 @@
 resources:
   - ../../base
+
+# Every pod that runs workflows needs the real public URL, not just the main one.
+# n8n derives $execution.resumeUrl from WEBHOOK_URL on *every* node parameter
+# resolution; since 2.40 an unparseable value raises "TypeError: Invalid URL" and
+# fails the node. The chart's webhook.url (base/values.yml) is a placeholder and
+# is rendered onto the webhook, worker and mcp-webhook deployments, so in queue
+# mode every execution died there. Patch all four.
 patches:
   - target:
       kind: Ingress
@@ -10,21 +17,79 @@ patches:
       - op: replace
         path: /spec/tls/0/hosts
         value: [n8n.dev.rods.me]
+
   - target:
       kind: Deployment
       name: n8n
     patch: |-
-          apiVersion: apps/v1
-          kind: Deployment
-          metadata:
-            name: n8n
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: n8n
+      spec:
+        template:
           spec:
-            template:
-              spec:
-                containers:
-                  - name: n8n-main
-                    env:
-                      - name: N8N_EDITOR_BASE_URL
-                        value: https://n8n.dev.rods.me
-                      - name: WEBHOOK_URL
-                        value: https://n8n.dev.rods.me
+            containers:
+              - name: n8n-main
+                env:
+                  - name: N8N_EDITOR_BASE_URL
+                    value: https://n8n.dev.rods.me
+                  - name: WEBHOOK_URL
+                    value: https://n8n.dev.rods.me
+
+  - target:
+      kind: Deployment
+      name: n8n-webhook
+    patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: n8n-webhook
+      spec:
+        template:
+          spec:
+            containers:
+              - name: n8n-webhook
+                env:
+                  - name: N8N_EDITOR_BASE_URL
+                    value: https://n8n.dev.rods.me
+                  - name: WEBHOOK_URL
+                    value: https://n8n.dev.rods.me
+
+  - target:
+      kind: Deployment
+      name: n8n-worker
+    patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: n8n-worker
+      spec:
+        template:
+          spec:
+            containers:
+              - name: n8n-worker
+                env:
+                  - name: N8N_EDITOR_BASE_URL
+                    value: https://n8n.dev.rods.me
+                  - name: WEBHOOK_URL
+                    value: https://n8n.dev.rods.me
+
+  - target:
+      kind: Deployment
+      name: n8n-mcp-webhook
+    patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: n8n-mcp-webhook
+      spec:
+        template:
+          spec:
+            containers:
+              - name: n8n-mcp-webhook
+                env:
+                  - name: N8N_EDITOR_BASE_URL
+                    value: https://n8n.dev.rods.me
+                  - name: WEBHOOK_URL
+                    value: https://n8n.dev.rods.me
