@@ -5,5 +5,9 @@ metadata:
 name: n8n
 releaseName: n8n
 repo: https://community-charts.github.io/helm-charts
+# Pinned deliberately. Unpinned, kustomize inflates whatever is newest at apply
+# time: that is how n8n went 2.19.2 -> 2.40.5 unannounced on 2026-11-16 and took
+# every workflow execution down with it. Bump this on purpose, never by accident.
+version: 1.24.43
 valuesFile: values.yml
 namespace: n8n
