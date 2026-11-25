@@ -7,6 +7,7 @@ resources:
   - n8n-encryption-key.yml
   - n8n-license-activation-key.yml
   - n8n-task-runners-secret.yml
+  - n8n-redis-auth.yml
 
 patches:
   - target:
@@ -27,3 +28,42 @@ patches:
             - name: n8n-task-runners
               image: n8nio/runners:2.11.4
               args: [python, javascript]
+
+  # The chart renders a `n8n-task-runners-secret` with freshly generated hex on every build, and
+  # it has no `existingSecret` escape hatch. That name is already owned by the DopplerSecret above,
+  # so every apply overwrote Doppler's values and the operator wrote them straight back -- churn
+  # that rolled the stack and, between the two writes, could leave a pod holding a token nothing
+  # else agreed on. Drop the chart's copy and let Doppler own the name outright.
+  - target:
+      kind: Secret
+      name: n8n-task-runners-secret
+    patch: |-
+      $patch: delete
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: n8n-task-runners-secret
+
+  # `checksum/secret` is sha256 of the *rendered* templates/secret.yaml. Every secret this release
+  # uses now comes from Doppler via an existingSecret, so that template's only remaining output is
+  # the task-runner secret deleted just above -- the annotation is a checksum over something that
+  # no longer reaches the cluster, and it still carries the chart's fresh random hex. Left in, it
+  # alone would roll every main and worker pod on every apply, which is the whole problem. Dropped,
+  # nothing is lost: there is no in-chart secret left for it to track.
+  #
+  # Note this also means a Doppler rotation no longer restarts pods by itself -- env from
+  # secretKeyRef is read once at pod start. Rotating a value here is a deliberate act that needs a
+  # deliberate rollout (`kubectl rollout restart`), not a side effect of an unrelated deploy.
+  - target:
+      kind: Deployment
+      name: n8n|n8n-worker
+    patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: n8n
+      spec:
+        template:
+          metadata:
+            annotations:
+              checksum/secret: null

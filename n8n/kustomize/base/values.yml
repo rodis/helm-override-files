@@ -28,6 +28,13 @@ worker:
     EXECUTIONS_DATA_PRUNE_MAX_COUNT: "2500"
 redis:
   enabled: true
+  # Take the password from Doppler rather than letting the subchart invent one. Unset, bitnami
+  # generates `requirepass` at render time -- and because `kustomize build --enable-helm` renders
+  # without a cluster, its reuse-the-existing-one lookup always came back empty, so every single
+  # apply rotated Redis and rolled the entire stack. See base/n8n-redis-auth.yml.
+  auth:
+    existingSecret: n8n-redis-auth
+    existingSecretPasswordKey: redis-password
 
 webhook:
   mode: queue
@@ -78,6 +85,14 @@ ingress:
 # -- External PostgreSQL parameters
 db:
   type: postgresdb
+
+# -- Where the n8n pods themselves read the Redis password. `redis.auth.existingSecret` above only
+# tells the Redis master which secret to read; this is the client half of the same pin, and it is
+# the ONLY thing this block changes -- the host still comes from the in-cluster subchart, because
+# `externalRedis.existingSecret` is used for nothing but the secretKeyRef name.
+externalRedis:
+  existingSecret: n8n-redis-auth
+  existingPasswordKey: redis-password
 
 externalPostgresql:
   host: pg-af720c5-aware.j.aivencloud.com

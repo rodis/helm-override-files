@@ -1,0 +1,31 @@
+# The Redis password, owned by Doppler instead of minted by the chart.
+#
+# Why this exists: with `redis.enabled: true` the bitnami subchart generates `requirepass` itself,
+# and its "reuse the existing one" helper is a `lookup` against the cluster. `kustomize build
+# --enable-helm` renders with no cluster connection, so the lookup returns empty and EVERY render
+# produced a brand-new password. Running the deploy verb therefore rotated Redis credentials and
+# rolled the whole n8n stack -- a verb that could not be run twice safely.
+#
+# Seeded 2026-11-25 from the password the running Redis was already using, so adopting this
+# changed nothing at the time; see the note on _REDIS_PASSWORD in Doppler.
+#
+# `lower-kebab` turns REDIS_PASSWORD into the key `redis-password`, which is the key both the
+# bitnami master (auth.existingSecret) and the n8n pods (externalRedis.existingSecret) expect.
+apiVersion: secrets.doppler.com/v1alpha1
+kind: DopplerSecret
+metadata:
+  name: n8n-redis-auth
+  namespace: doppler-operator-system
+spec:
+  tokenSecret:
+    name: doppler-token-secret
+    namespace: doppler-operator-system
+  project: n8n-runners-auth-token
+  config: prd
+  nameTransformer: lower-kebab
+  secrets:
+    - REDIS_PASSWORD
+  managedSecret:
+    name: n8n-redis-auth
+    namespace: n8n
+    type: Opaque
